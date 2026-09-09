@@ -1,32 +1,12 @@
 <!doctype html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neobank · Ambient study</title>
-<link rel="stylesheet" href="/src/style.css">
-</head>
-<body>
-<canvas id="background" aria-hidden="true"></canvas>
-<main><div class="mark" aria-hidden="true">n.</div><h1>Добрый вечер.</h1><p>Всё начинается с движения.</p></main>
-<details class="controls" open>
-<summary>Настройки фона <span>01 / Ambient</span></summary>
-<div class="settings">
-<label for="speed">Скорость <output id="speed-value">1.0×</output></label>
-<input id="speed" type="range" min="0.1" max="2" step="0.1" value="1">
-<label for="intensity">Свечение <output id="intensity-value">100%</output></label>
-<input id="intensity" type="range" min="0.3" max="1.5" step="0.05" value="1">
-<label for="focus">Ширина резкой зоны <output id="focus-value">32%</output></label>
-<input id="focus" type="range" min="0.15" max="0.85" step="0.01" value="0.32">
-<label for="aperture">Размытие по глубине <output id="aperture-value">1.0×</output></label>
-<input id="aperture" type="range" min="0" max="2" step="0.1" value="1">
-<label for="timeline">Момент импульса <output id="timeline-value">0.0 с</output></label>
-<input id="timeline" type="range" min="0" max="7.6" step="0.01" value="0">
-<button id="reference" type="button">Контрольный кадр · 0,35 с</button>
-<button id="replay" type="button">Повторить импульс</button>
-<div class="buttons"><button id="pause" type="button">Пауза</button><button id="clean" type="button">Только фон</button></div>
-<p id="status" role="status">Импульс проходит по полотну</p>
-</div>
-</details>
-<button id="restore" type="button" hidden>Показать управление</button>
-<script type="module" src="/src/main.js"></script>
-</body></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neobank · Ambient study</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

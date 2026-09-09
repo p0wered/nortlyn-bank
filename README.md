@@ -2,6 +2,8 @@
 
 Three.js study based on the supplied 2.68-second Sberbank reference. A single luminous wave deforms a woven surface, followed by a trough and a damped rebound. It is an approximation of the visual behavior, not a recovered Sberbank asset or a numerical cloth/fluid solver.
 
+The app is a React + TypeScript + Vite client. React owns the overlay UI; the cloth impulse stays an imperative Three.js engine so the custom multi-pass pipeline (surface target, depth-of-field gather, then particles) is unchanged.
+
 ## Run
 
 Node.js 22+:
@@ -11,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. The local server serves installed Three.js modules; no CDN is used. It is a development server bound to localhost.
+Open http://127.0.0.1:5173. Vite serves the app on localhost. Production build: `npm run build` then `npm run preview`.
 
 ## Behavior
 
@@ -28,7 +30,7 @@ Reduced-motion preferences select the 0.35-second static sample. Pressing replay
 - Particles receive their own depth-of-field radii and sample surface depth for occlusion. They are composited after surface blur to avoid blurring twice.
 - DPR is capped at 1.5 and the render buffer at approximately 1.8 million pixels.
 
-`src/background.js` contains scene/lifecycle/controller setup. `src/wave-shaders.js` contains the shared impulse and render shaders. `createBackground(canvas, onStatus, onTime)` returns setters for speed/intensity/focus/aperture, `toggle()`, `seek(seconds)`, `replay()`, and `dispose()` for unmount cleanup.
+`src/lib/background.ts` contains scene/lifecycle/controller setup. `src/lib/wave-shaders.ts` contains the shared impulse and render shaders. `createBackground(canvas, onStatus, onTime)` returns setters for speed/intensity/focus/aperture, `toggle()`, `seek(seconds)`, `replay()`, and `dispose()` for unmount cleanup. React mounts that controller from `src/components/AmbientBackground.tsx`.
 
 ## Validation and limitations
 

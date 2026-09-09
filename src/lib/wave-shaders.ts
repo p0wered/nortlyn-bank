@@ -31,9 +31,13 @@ float clothHeight(vec2 p) { return restHeight(p)+wave(p,uTime).x; }
 float blurRadius(vec3 world,float depth) {
   float signedOffset=length(world.xz-pulseOrigin)-pulseRadius(uTime);
   float radialOffset=abs(signedOffset);
-  float halfWidth=mix(.025,.18,uFocus);
-  float outside=max(0.0,radialOffset-halfWidth);
-  float radialBlur=(1.0-exp(-outside*2.1))*mix(.026,.046,smoothstep(-.1,.1,signedOffset));
+  // A continuous shoulder replaces the flat sharp band and its abrupt edge.
+  // Zero slope at the crest lets fine yarn soften gradually on both sides;
+  // focus controls the shoulder width without introducing a cutoff.
+  float focusWidth=mix(.24,.52,uFocus);
+  float focusDistance=radialOffset/focusWidth;
+  float radialBlur=(1.0-exp(-focusDistance*focusDistance))
+    *mix(.026,.046,smoothstep(-.4,.4,signedOffset));
   // Dust above the cloth retains near/far bokeh even over the focused crest.
   float elevation=abs(world.y-clothHeight(world.xz));
   float verticalBlur=smoothstep(.05,.38,elevation)*.013;
@@ -61,6 +65,7 @@ void main() {
   gl_Position=projectionMatrix*view;
 }
 `;
+
 export const clothFragment = waveField + `
 varying vec3 vWorld;
 varying vec3 vNormal;
@@ -143,6 +148,7 @@ void main() {
   vBrightness=(.055+event.y*1.55+delayed.y*.40)*(.5+1.1*aSeed)*uIntensity;
 }
 `;
+
 export const particleFragment = `
 uniform sampler2D uDepthTexture;
 uniform vec2 uResolution;
@@ -169,6 +175,7 @@ export const postVertex = `
 varying vec2 vUv;
 void main() { vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }
 `;
+
 export const postFragment = waveField + `
 uniform sampler2D uColorTexture;
 uniform mat4 uInverseProjection;
