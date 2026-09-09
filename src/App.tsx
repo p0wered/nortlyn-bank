@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AmbientBackground } from './components/AmbientBackground';
 import { Controls } from './components/Controls';
-import { Hero } from './components/Hero';
 import type { BackgroundController, BackgroundStatus } from './lib/types';
 
 export function App() {
@@ -24,7 +23,6 @@ export function App() {
   return (
     <>
       <AmbientBackground controllerRef={controllerRef} onStatus={setStatus} onTime={onTime} />
-      <Hero />
       <Controls
         status={status}
         controllerRef={controllerRef}
