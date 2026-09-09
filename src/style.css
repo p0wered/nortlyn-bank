@@ -1,0 +1,26 @@
+:root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #f5fff9; background: #05332e; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; background: radial-gradient(ellipse at 90% 15%, #88e69b, transparent 55%), linear-gradient(145deg, #005642, #124758 70%, #487c90); }
+#background { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+main { position: relative; padding: clamp(28px, 6vw, 88px); pointer-events: none; }
+.mark { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid #ffffff50; border-radius: 16px; font-size: 30px; font-weight: 600; margin-bottom: 30px; }
+h1 { font-size: clamp(30px, 4vw, 56px); line-height: 1.08; letter-spacing: -.04em; margin: 0 0 14px; font-weight: 600; }
+main p { font-size: 16px; opacity: .7; margin: 0; }
+.controls { position: fixed; bottom: 28px; right: 28px; width: 290px; background: #072e2dba; backdrop-filter: blur(24px); border: 1px solid #ffffff25; border-radius: 18px; padding: 18px; }
+summary { cursor: pointer; font-size: 13px; list-style: none; display: flex; justify-content: space-between; gap: 8px; }
+summary span { opacity: .45; font-size: 11px; }
+.settings { padding-top: 24px; }
+label { display: flex; justify-content: space-between; font-size: 12px; }
+output { opacity: .65; font-variant-numeric: tabular-nums; }
+input { width: 100%; margin: 13px 0 22px; accent-color: #a4ed9d; }
+.buttons { display: flex; gap: 8px; }
+button { background: #ffffff12; color: inherit; border: 1px solid #ffffff30; border-radius: 9px; padding: 10px 12px; cursor: pointer; font: inherit; font-size: 12px; }
+button:hover { background: #ffffff22; }
+button:focus-visible, summary:focus-visible { outline: 2px solid #b4ffba; outline-offset: 4px; }
+#status { margin: 16px 0 0; opacity: .55; font-size: 10px; }
+#restore { position: fixed; right: 20px; bottom: 20px; background: #082c35a0; }
+body.clean main, body.clean .controls { display: none; }
+@media (max-width: 600px) { .controls { right: 20px; bottom: 20px; width: calc(100% - 40px); } }
+
+#replay { width: 100%; margin-bottom: 8px; background: #a4ed9d22; }
+.controls { max-height: calc(100svh - 40px); overflow: auto; }
