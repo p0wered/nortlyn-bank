@@ -24,3 +24,5 @@ body.clean main, body.clean .controls { display: none; }
 
 #replay { width: 100%; margin-bottom: 8px; background: #a4ed9d22; }
 .controls { max-height: calc(100svh - 40px); overflow: auto; }
+
+#reference { width: 100%; margin-bottom: 8px; }

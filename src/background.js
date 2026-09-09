@@ -3,11 +3,12 @@ import { clothVertex, clothFragment, particleVertex, particleFragment, postVerte
 
 export function createBackground(canvas,onStatus=()=>{},onTime=()=>{}) {
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  let paused=reduced.matches, disposed=false, failed=false, lost=false, time=0, speed=1, raf=0, previous=0;
+  const study=new URLSearchParams(location.search).has('study');
+  let paused=study||reduced.matches, disposed=false, failed=false, lost=false, time=study ? .35 : 0, speed=1, raf=0, previous=0;
   let renderer, target, clothGeometry, clothMaterial, particleGeometry, particleMaterial, postGeometry, postMaterial;
   let scene, camera, particles, postScene, postCamera;
-  const uniforms={uTime:{value:reduced.matches?2.0:0},uIntensity:{value:1},uFocus:{value:.53},uAperture:{value:1},uResolution:{value:new THREE.Vector2(1,1)}};
-  if(reduced.matches) time=2.0;
+  const uniforms={uTime:{value:time},uIntensity:{value:1},uFocus:{value:.32},uAperture:{value:1},uResolution:{value:new THREE.Vector2(1,1)}};
+  if(reduced.matches) time=.35;
   function status() { onStatus(failed?'fallback':lost?'lost':time>=7.6?'settled':paused?(reduced.matches?'reduced':'paused'):'running'); }
   function render() {
     if(!renderer||disposed||lost||failed) return;
@@ -25,9 +26,9 @@ export function createBackground(canvas,onStatus=()=>{},onTime=()=>{}) {
     renderer.getDrawingBufferSize(uniforms.uResolution.value);
     target.setSize(uniforms.uResolution.value.x,uniforms.uResolution.value.y);
     camera.aspect=w/h;
-    // Keep the far edge/horizon outside the crop even in wide windows with roll.
+    // Keep the far edge/horizon outside the crop, including wide windows.
     const maxHalfAngle=THREE.MathUtils.degToRad(12.5);
-    camera.fov=Math.min(24,THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(maxHalfAngle)/(Math.cos(.28)+camera.aspect*Math.sin(.28)))));
+    camera.fov=Math.min(24,THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(maxHalfAngle)/(Math.cos(.65)+camera.aspect*Math.sin(.65)))));
     camera.updateProjectionMatrix(); camera.updateMatrixWorld(); render();
   }
   function frame(now) {
@@ -51,26 +52,29 @@ export function createBackground(canvas,onStatus=()=>{},onTime=()=>{}) {
     renderer.setClearColor(0x082d32,1);
     renderer.debug.onShaderError=()=>{ failed=true; canvas.style.visibility='hidden'; status(); };
     camera=new THREE.PerspectiveCamera(24,1,.1,40);
-    // Low macro viewpoint, ~18 degrees above the fabric, with a slight diagonal
-    // framing. The wave remains circular in world space.
-    camera.position.set(.35,.9,2.65); camera.lookAt(0,0,-.05);
-    camera.rotateZ(.28);
+    // Crop one distant arc rather than exposing the impulse center.
+    // A 37-degree roll matches the reference diagonal in portrait.
+    camera.position.set(0,1.45,3.6); camera.lookAt(0,0,0);
+    camera.rotateZ(.65);
     scene=new THREE.Scene(); particles=new THREE.Scene();
     clothGeometry=new THREE.PlaneGeometry(22,22,300,300);
     clothGeometry.rotateX(-Math.PI/2);
     clothMaterial=new THREE.ShaderMaterial({uniforms,vertexShader:clothVertex,fragmentShader:clothFragment,side:THREE.DoubleSide});
     const cloth=new THREE.Mesh(clothGeometry,clothMaterial);
     cloth.frustumCulled=false; scene.add(cloth);
-    target=new THREE.WebGLRenderTarget(1,1,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:true});
+    target=new THREE.WebGLRenderTarget(1,1,{minFilter:THREE.LinearMipmapLinearFilter,magFilter:THREE.LinearFilter,generateMipmaps:true,depthBuffer:true});
     target.depthTexture=new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
     // Stable seeded anchors in world space, with different heights above cloth.
     let seed=92741;
     const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
     const count=1800, positions=new Float32Array(count*3), seeds=new Float32Array(count), lifts=new Float32Array(count);
     for(let i=0;i<count;i++) {
-      positions[i*3]=(random()-.5)*16;
-      positions[i*3+2]=(random()-.5)*16;
-      seeds[i]=random(); lifts[i]=.035+Math.pow(random(),2)*.35;
+      positions[i*3]=(random()-.5)*10;
+      positions[i*3+2]=(random()-.5)*10;
+      seeds[i]=random();
+      // Mostly fine dust close to the yarn, fewer suspended bokeh highlights.
+      const layer=random();
+      lifts[i]=layer<.68 ? .008+random()*.055 : .10+Math.pow(random(),1.5)*.48;
     }
     particleGeometry=new THREE.BufferGeometry();
     particleGeometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
