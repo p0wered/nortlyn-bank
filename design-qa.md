@@ -1,6 +1,7 @@
 # Design QA
 
-- Source visual truth: `/Users/eva-02/Downloads/Desktop.png`
+- Source visual context: `/var/folders/lb/4tdjw03n5_g8jqrglwwtvh5r0000gn/T/codex-clipboard-db15cb52-4373-4bdf-a057-1052fbbbff82.png`
+- User-directed target: Hero fills almost the entire initial viewport while a small portion of the next section remains visible
 - Implementation capture: Codex in-app Browser, local prototype tab `Nortlyn Bank`, captured during this task
 - Desktop viewport: 1470 × 1819 CSS px at device pixel ratio 1
 - Source pixels: 1470 × 1819
@@ -14,19 +15,21 @@ Architectural scaffold for a banking React SPA. The selected reference defines t
 
 ## Full-view comparison evidence
 
-The source begins its white section at approximately y=890. The implementation begins it at y=891.69, preserving the approximately 49% upper visual region and the same full-width rounded transition. The Three.js scene fills the Hero without cropping gaps. The source's blue-to-lilac atmosphere is represented through the background component's blue, cobalt and lilac props while retaining the project's existing cloth shader.
+The supplied screenshot showed the Hero ending too early. The revised implementation places the white section at approximately 90% of the initial desktop viewport and 90% on mobile, preserving a small preview of the next section. The Three.js scene fills the enlarged Hero without cropping gaps.
+
+Latest browser verification at 662 × 837 placed the Hero bottom at y=778.41 and the visible content boundary at y=754.41, or 90.1% of the viewport height. No console warnings or errors were reported.
 
 Desktop geometry:
 
-- Hero: 1455 × 927.69 px
-- Content section: y=891.69, overlap=36 px, top radius=36 px
+- Hero: 94dvh
+- Content section: approximately y=90dvh after the 36 px overlap, top radius=36 px
 - Horizontal overflow: none (`scrollWidth=1455`)
 - Console warnings and errors: none
 
 Mobile geometry:
 
-- Hero: 375 × 405.12 px
-- Content section: y=381.12, overlap=24 px, top radius=24 px
+- Hero: 93dvh
+- Content section: approximately y=90dvh after the 24 px overlap, top radius=24 px
 - Horizontal overflow: none (`scrollWidth=375`)
 
 ## Focused region comparison
@@ -36,7 +39,7 @@ A separate crop was not needed because the target contains no typography, contro
 ## Required fidelity surfaces
 
 - Fonts and typography: not applicable; both source and scaffold intentionally contain no visible copy.
-- Spacing and layout rhythm: passed; transition position differs by about 2 px from the source and the radius/overlap proportions match.
+- Spacing and layout rhythm: passed; the first viewport is now dominated by the Hero while the rounded section boundary remains visible.
 - Colors and visual tokens: passed for direction; exact pixels intentionally differ because the supplied Three.js shader remains the Hero asset rather than replacing it with the raster reference.
 - Image quality and asset fidelity: passed; the existing live WebGL asset is retained at native viewport resolution with a color-aware CSS fallback.
 - Copy and content: passed; no invented product copy was added.
@@ -49,7 +52,8 @@ No actionable P0, P1 or P2 findings remain. The native vertical scrollbar is exp
 
 ## Comparison history
 
-- Initial desktop pass: macro boundary aligned with the reference and required no correction.
+- Initial desktop pass: the Hero ended around the midpoint of the viewport and was rejected as too short.
+- Revision: Hero increased to 94dvh on desktop and 93dvh on mobile, leaving roughly 10% of the next section visible after overlap.
 - Initial mobile resize briefly captured the WebGL buffer before resize completion; a clean reload confirmed the full-width canvas and correct responsive layout. This was a capture timing issue, not a product defect.
 
 ## Implementation checklist

@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #15171a;
@@ -5,10 +7,6 @@
   color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 html,
@@ -19,62 +17,6 @@ body,
 }
 
 body {
-  margin: 0;
   min-width: 320px;
   min-height: 100dvh;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-.home-page {
-  min-height: 100dvh;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-.hero {
-  position: relative;
-  min-height: clamp(32rem, 51dvh, 58rem);
-  overflow: hidden;
-  background: #073973;
-}
-
-.ambient-background {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 88% 16%, var(--ambient-glow), transparent 58%),
-    linear-gradient(145deg, var(--ambient-shadow), var(--ambient-lift));
-}
-
-.ambient-background__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.content-section {
-  position: relative;
-  z-index: 1;
-  min-height: 58dvh;
-  margin-top: -2.25rem;
-  border-radius: 2.25rem 2.25rem 0 0;
-  background: #ffffff;
-}
-
-@media (max-width: 767px) {
-  .hero {
-    min-height: 48dvh;
-  }
-
-  .content-section {
-    min-height: 60dvh;
-    margin-top: -1.5rem;
-    border-radius: 1.5rem 1.5rem 0 0;
-  }
 }
