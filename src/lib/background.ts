@@ -8,27 +8,29 @@ import {
   postVertex,
 } from './wave-shaders';
 import {
+  BACKGROUND_COLORS,
   IMPULSE_DURATION,
   REFERENCE_TIME,
   type BackgroundController,
-  type BackgroundStatus,
+  type BackgroundOptions,
 } from './types';
 
 type Disposable = { dispose: () => void };
 
 export function createBackground(
   canvas: HTMLCanvasElement,
-  onStatus: (status: BackgroundStatus) => void = () => {},
-  onTime: (time: number) => void = () => {},
+  options: BackgroundOptions = {},
 ): BackgroundController {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const study = new URLSearchParams(location.search).has('study');
-  let paused = study || reduced.matches;
+  const colors = { ...BACKGROUND_COLORS, ...options.colors };
+  const autoPlay = options.autoPlay ?? true;
+  const stillTime = Math.max(0, Math.min(IMPULSE_DURATION, options.stillTime ?? REFERENCE_TIME));
+  const speed = options.speed ?? 1;
+  let paused = !autoPlay || reduced.matches;
   let disposed = false;
   let failed = false;
   let lost = false;
-  let time = study ? REFERENCE_TIME : 0;
-  let speed = 1;
+  let time = paused ? stillTime : 0;
   let raf = 0;
   let previous = 0;
   let renderer: THREE.WebGLRenderer | undefined;
@@ -45,36 +47,30 @@ export function createBackground(
   let postScene: THREE.Scene | undefined;
   let postCamera: THREE.Camera | undefined;
 
+  const sceneColors = {
+    shadow: new THREE.Color(BACKGROUND_COLORS.shadow),
+    lift: new THREE.Color(BACKGROUND_COLORS.lift),
+    glow: new THREE.Color(BACKGROUND_COLORS.glow),
+  };
+  sceneColors.shadow.set(colors.shadow);
+  sceneColors.lift.set(colors.lift);
+  sceneColors.glow.set(colors.glow);
+
   const uniforms = {
     uTime: { value: time },
-    uIntensity: { value: 1 },
-    uFocus: { value: 0.32 },
-    uAperture: { value: 1 },
+    uIntensity: { value: options.intensity ?? 1 },
+    uFocus: { value: options.focus ?? 0.32 },
+    uAperture: { value: options.aperture ?? 1 },
     uResolution: { value: new THREE.Vector2(1, 1) },
+    uColorShadow: { value: sceneColors.shadow },
+    uColorLift: { value: sceneColors.lift },
+    uColorGlow: { value: sceneColors.glow },
   };
-
-  if (reduced.matches) time = REFERENCE_TIME;
-
-  function status(): void {
-    const next: BackgroundStatus = failed
-      ? 'fallback'
-      : lost
-        ? 'lost'
-        : time >= IMPULSE_DURATION
-          ? 'settled'
-          : paused
-            ? reduced.matches
-              ? 'reduced'
-              : 'paused'
-            : 'running';
-    onStatus(next);
-  }
 
   function render(): void {
     if (!renderer || !target || !scene || !camera || !postScene || !postCamera || !particles) return;
     if (disposed || lost || failed) return;
     uniforms.uTime.value = time;
-    onTime(time);
     renderer.setRenderTarget(target);
     renderer.clear();
     renderer.render(scene, camera);
@@ -115,8 +111,7 @@ export function createBackground(
     if (previous) time = Math.min(IMPULSE_DURATION, time + Math.min((now - previous) / 1000, 0.05) * speed);
     previous = now;
     render();
-    if (time >= IMPULSE_DURATION) status();
-    else raf = requestAnimationFrame(frame);
+    if (time < IMPULSE_DURATION) raf = requestAnimationFrame(frame);
   }
 
   function sync(): void {
@@ -129,9 +124,14 @@ export function createBackground(
     }
   }
 
+  function applySceneColor(): void {
+    const clear = sceneColors.shadow.clone().lerp(sceneColors.lift, 0.22);
+    renderer?.setClearColor(clear, 1);
+  }
+
   function motionChange(): void {
-    paused = reduced.matches;
-    status();
+    paused = !autoPlay || reduced.matches;
+    if (reduced.matches) time = stillTime;
     sync();
   }
 
@@ -140,14 +140,12 @@ export function createBackground(
     lost = true;
     cancelAnimationFrame(raf);
     canvas.style.visibility = 'hidden';
-    status();
   }
 
   function contextRestored(): void {
     lost = false;
     canvas.style.visibility = 'visible';
     resize();
-    status();
     sync();
   }
 
@@ -159,11 +157,10 @@ export function createBackground(
       powerPreference: 'low-power',
     });
     renderer.autoClear = false;
-    renderer.setClearColor(0x082d32, 1);
+    applySceneColor();
     renderer.debug.onShaderError = () => {
       failed = true;
       canvas.style.visibility = 'hidden';
-      status();
     };
 
     camera = new THREE.PerspectiveCamera(24, 1, 0.1, 40);
@@ -252,13 +249,11 @@ export function createBackground(
     postScene.add(quad);
 
     resize();
-    status();
     sync();
   } catch (error) {
     failed = true;
     console.error(error);
     canvas.style.visibility = 'hidden';
-    status();
   }
 
   const observer = new ResizeObserver(resize);
@@ -269,41 +264,6 @@ export function createBackground(
   canvas.addEventListener('webglcontextrestored', contextRestored);
 
   return {
-    get paused() {
-      return paused;
-    },
-    setSpeed(value) {
-      speed = value;
-    },
-    setIntensity(value) {
-      uniforms.uIntensity.value = value;
-      render();
-    },
-    setFocus(value) {
-      uniforms.uFocus.value = value;
-      render();
-    },
-    setAperture(value) {
-      uniforms.uAperture.value = value;
-      render();
-    },
-    toggle() {
-      paused = !paused;
-      status();
-      sync();
-    },
-    seek(value) {
-      time = Math.max(0, Math.min(IMPULSE_DURATION, value));
-      paused = true;
-      status();
-      sync();
-    },
-    replay() {
-      time = 0;
-      paused = false;
-      status();
-      sync();
-    },
     dispose() {
       disposed = true;
       cancelAnimationFrame(raf);

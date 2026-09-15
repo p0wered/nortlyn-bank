@@ -5,6 +5,9 @@ uniform float uIntensity;
 uniform float uFocus;
 uniform float uAperture;
 uniform vec2 uResolution;
+uniform vec3 uColorShadow;
+uniform vec3 uColorLift;
+uniform vec3 uColorGlow;
 const vec2 pulseOrigin=vec2(0.0,-6.0);
 float pulseRadius(float age) { return 6.0+age*1.05; }
 float gaussian(float x,float width) { return exp(-x*x/(width*width)); }
@@ -31,13 +34,12 @@ float clothHeight(vec2 p) { return restHeight(p)+wave(p,uTime).x; }
 float blurRadius(vec3 world,float depth) {
   float signedOffset=length(world.xz-pulseOrigin)-pulseRadius(uTime);
   float radialOffset=abs(signedOffset);
-  // A continuous shoulder replaces the flat sharp band and its abrupt edge.
-  // Zero slope at the crest lets fine yarn soften gradually on both sides;
-  // focus controls the shoulder width without introducing a cutoff.
-  float focusWidth=mix(.24,.52,uFocus);
+  // A broad, symmetric shoulder keeps the transition even across the crest.
+  // The rational falloff approaches full blur slowly, without a steep shoulder.
+  float focusWidth=mix(.32,.68,uFocus);
   float focusDistance=radialOffset/focusWidth;
-  float radialBlur=(1.0-exp(-focusDistance*focusDistance))
-    *mix(.026,.046,smoothstep(-.4,.4,signedOffset));
+  float focusSquared=focusDistance*focusDistance;
+  float radialBlur=.036*focusSquared/(1.0+focusSquared);
   // Dust above the cloth retains near/far bokeh even over the focused crest.
   float elevation=abs(world.y-clothHeight(world.xz));
   float verticalBlur=smoothstep(.05,.38,elevation)*.013;
@@ -88,18 +90,20 @@ void main() {
   float fresnel=pow(1.0-max(dot(normal,view),0.0),3.0);
   vec2 uv=gl_FragCoord.xy/uResolution;
   float cool=(1.0-smoothstep(0.0,.65,uv.y));
-  vec3 base=mix(vec3(.008,.24,.15),vec3(.012,.11,.20),cool);
-  base=mix(base,vec3(.10,.35,.43),smoothstep(.1,1.0,uv.x)*cool*.8);
-  vec3 glow=mix(vec3(.40,.95,.10),vec3(.48,.94,.51),smoothstep(.25,1.0,uv.x));
+  vec3 coolBase=uColorLift*vec3(.12,.31,.47);
+  vec3 base=mix(uColorShadow,coolBase,cool);
+  base=mix(base,uColorLift,smoothstep(.1,1.0,uv.x)*cool*.8);
+  vec3 glowMint=min(mix(uColorGlow,vec3(1.0),.15)*vec3(1.05,.98,2.2),vec3(1.0));
+  vec3 glow=mix(uColorGlow,glowMint,smoothstep(.25,1.0,uv.x));
   vec3 color=base*(.8+diffuse*.35);
   // Broad light sources persist after the crest passes through the crop.
   float mint=exp(-pow((uv.x-.94)/.39,2.0)-pow((uv.y-.86)/.65,2.0));
   float green=exp(-pow((uv.x-.22)/.65,2.0)-pow((uv.y-.72)/.34,2.0));
-  color+=vec3(.20,.48,.32)*mint*uIntensity;
-  color+=vec3(.015,.19,.025)*green*uIntensity;
+  color+=mix(uColorLift,uColorGlow,.35)*.7*mint*uIntensity;
+  color+=uColorShadow*vec3(.6,.8,.16)*green*uIntensity;
   color+=glow*event.y*(.40+diffuse*.26)*uIntensity;
-  color+=vec3(.35,.60,.25)*spec*(.03+event.y*.18)*uIntensity;
-  color+=vec3(.018,.05,.04)*fresnel;
+  color+=mix(uColorGlow,vec3(1.0),.15)*spec*(.03+event.y*.18)*uIntensity;
+  color+=uColorShadow*.22*fresnel;
   // Material-bound variations survive defocus as overlapping soft patches.
   float mottling=(softNoise(vMaterial*18.0)*2.0-1.0);
   float bundles=(softNoise(vMaterial*vec2(48.0,9.0))*2.0-1.0);
@@ -152,6 +156,8 @@ void main() {
 export const particleFragment = `
 uniform sampler2D uDepthTexture;
 uniform vec2 uResolution;
+uniform vec3 uColorLift;
+uniform vec3 uColorGlow;
 varying float vBrightness;
 varying float vCore;
 varying float vDefocus;
@@ -166,7 +172,7 @@ void main() {
   float surfaceDepth=texture2D(uDepthTexture,gl_FragCoord.xy/uResolution).r;
   if(gl_FragCoord.z>surfaceDepth+.00001) discard;
   float alpha=disc*vBrightness*vCore;
-  vec3 tint=mix(vec3(.73,.94,.65),vec3(.65,.89,1.0),vTint);
+  vec3 tint=mix(mix(uColorGlow,vec3(1.0),.55),mix(uColorLift,vec3(1.0),.62),vTint);
   gl_FragColor=vec4(tint,alpha);
 }
 `;

@@ -1,8 +1,8 @@
-# Neobank · macro cloth impulse
+# Nortlyn Bank · React SPA scaffold
 
-Three.js study based on the supplied 2.68-second Sberbank reference. A single luminous wave deforms a woven surface, followed by a trough and a damped rebound. It is an approximation of the visual behavior, not a recovered Sberbank asset or a numerical cloth/fluid solver.
+The project is a React + TypeScript + Vite single-page application scaffold. The existing Three.js cloth impulse is isolated as the visual background of the home-page Hero, followed by a content section ready for future site modules.
 
-The app is a React + TypeScript + Vite client. React owns the overlay UI; the cloth impulse stays an imperative Three.js engine so the custom multi-pass pipeline (surface target, depth-of-field gather, then particles) is unchanged.
+React owns page composition while the cloth impulse stays an imperative Three.js engine so its custom multi-pass pipeline remains unchanged.
 
 ## Run
 
@@ -15,11 +15,14 @@ npm run dev
 
 Open http://127.0.0.1:5173. Vite serves the app on localhost. Production build: `npm run build` then `npm run preview`.
 
-## Behavior
+## Structure
 
-One impulse plays at startup and then settles. “Повторить импульс” restarts the event; the timeline lets you inspect an exact paused moment. Speed, intensity, focused ring width and defocus are adjustable. There is no automatic periodic loop.
+- `src/pages/HomePage.tsx` composes the home page.
+- `src/components/Hero.tsx` configures the visual Hero.
+- `src/components/AmbientBackground.tsx` exposes colors, intensity, focus, aperture, speed, autoplay and static-frame time as props.
+- `src/lib/background.ts` owns the Three.js renderer lifecycle.
 
-Reduced-motion preferences select the 0.35-second static sample. Pressing replay explicitly starts motion. Hidden tabs suspend rendering without advancing the event. Rendering also stops once the impulse settles. CSS provides a fallback if WebGL2 is unavailable.
+One impulse plays at startup and then settles. Reduced-motion preferences select a static sample. Hidden tabs suspend rendering without advancing the event, and CSS provides a color-aware fallback if WebGL is unavailable.
 
 ## Rendering
 
@@ -30,7 +33,7 @@ Reduced-motion preferences select the 0.35-second static sample. Pressing replay
 - Particles receive their own depth-of-field radii and sample surface depth for occlusion. They are composited after surface blur to avoid blurring twice.
 - DPR is capped at 1.5 and the render buffer at approximately 1.8 million pixels.
 
-`src/lib/background.ts` contains scene/lifecycle/controller setup. `src/lib/wave-shaders.ts` contains the shared impulse and render shaders. `createBackground(canvas, onStatus, onTime)` returns setters for speed/intensity/focus/aperture, `toggle()`, `seek(seconds)`, `replay()`, and `dispose()` for unmount cleanup. React mounts that controller from `src/components/AmbientBackground.tsx`.
+`src/lib/background.ts` contains scene and lifecycle setup. `src/lib/wave-shaders.ts` contains the shared impulse and render shaders. `createBackground(canvas, options)` returns only `dispose()` for unmount cleanup; visual configuration enters through `AmbientBackground` props.
 
 ## Validation and limitations
 

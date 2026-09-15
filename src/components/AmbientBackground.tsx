@@ -1,36 +1,44 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { createBackground } from '../lib/background';
-import type { BackgroundController, BackgroundStatus } from '../lib/types';
+import { BACKGROUND_COLORS, type BackgroundOptions } from '../lib/types';
 
-type AmbientBackgroundProps = {
-  controllerRef: RefObject<BackgroundController | null>;
-  onStatus: (status: BackgroundStatus) => void;
-  onTime: (time: number) => void;
-};
+export type AmbientBackgroundProps = BackgroundOptions & { className?: string };
 
-export function AmbientBackground({ controllerRef, onStatus, onTime }: AmbientBackgroundProps) {
+export function AmbientBackground({
+  className = '',
+  colors,
+  speed = 1,
+  intensity = 1,
+  focus = 0.32,
+  aperture = 1,
+  autoPlay = true,
+  stillTime,
+}: AmbientBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const onStatusRef = useRef(onStatus);
-  const onTimeRef = useRef(onTime);
-  onStatusRef.current = onStatus;
-  onTimeRef.current = onTime;
+  const shadow = colors?.shadow ?? BACKGROUND_COLORS.shadow;
+  const lift = colors?.lift ?? BACKGROUND_COLORS.lift;
+  const glow = colors?.glow ?? BACKGROUND_COLORS.glow;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const controller = createBackground(
-      canvas,
-      (status) => onStatusRef.current(status),
-      (time) => onTimeRef.current(time),
-    );
-    controllerRef.current = controller;
+    const controller = createBackground(canvas, {
+      colors: { shadow, lift, glow }, speed, intensity, focus, aperture, autoPlay, stillTime,
+    });
 
-    return () => {
-      controller.dispose();
-      controllerRef.current = null;
-    };
-  }, [controllerRef]);
+    return () => controller.dispose();
+  }, [aperture, autoPlay, focus, glow, intensity, lift, shadow, speed, stillTime]);
 
-  return <canvas ref={canvasRef} id="background" aria-hidden="true" />;
+  const style = {
+    '--ambient-shadow': shadow,
+    '--ambient-lift': lift,
+    '--ambient-glow': glow,
+  } as CSSProperties;
+
+  return (
+    <div className={`ambient-background ${className}`.trim()} style={style} aria-hidden="true">
+      <canvas ref={canvasRef} className="ambient-background__canvas" />
+    </div>
+  );
 }
