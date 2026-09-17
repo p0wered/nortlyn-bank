@@ -1,6 +1,6 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
-import { createBackground } from '../lib/background';
-import { BACKGROUND_COLORS, type BackgroundOptions } from '../lib/types';
+import { createBackground } from '../../lib/background.ts';
+import { BACKGROUND_COLORS, type BackgroundOptions } from '../../lib/types.ts';
 import styles from './AmbientBackground.module.css';
 
 export type AmbientBackgroundProps = BackgroundOptions & { className?: string };

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import iphoneFrame from '../refs/iphone-17-mock.png';
+import iphoneFrame from '../../refs/iphone-17-mock.png';
 import styles from './PhoneFrame.module.css';
 
 type PhoneFrameProps = {

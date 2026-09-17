@@ -15,16 +15,16 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 - User references: [Alfa Bank](https://alfabank.ru/), [Sber](https://www.sberbank.ru/), [VTB](https://www.vtb.ru/), [Monobank](https://monobank.ua/en/). These are references for banking content and asset direction, not templates to copy.
 - Implementation scope: fill the **Hero cards only**, with updated typography and a deeper blue accent. The user explicitly clarified that other sections must remain empty. Do not add product sections, app marketing, FAQ, footer, or navigation as part of this task.
 - Do not generate assets yet. Preserve space for future assets without adding substitute illustrations.
-- Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page has a neighboring `.module.css` file; `src/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
+- Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page and its `.module.css` share a folder, following the user's organization; `src/assets/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
 - Buttons use a reusable `Button` component with `primary`, `secondary`, and `text` variants. Primary uses the brand accent; secondary uses a pale blue surface with accent text and a pill shape inspired by the supplied VTB button screenshot; text uses accent-colored text with a line revealing from left to right on hover or keyboard focus.
 
 ## Current implementation — evidence, not approval
 
 - React + TypeScript + Vite SPA, CSS Modules, Three.js ambient background.
-- `src/components/Hero.tsx` places the card grid over an animated blue/periwinkle background.
-- `src/components/BentoGrid.tsx` contains five populated translucent Hero cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
+- `src/components/HomePage/Hero.tsx` places the card grid over an animated blue/periwinkle background. The grid markup is directly inside Hero, with all local styles in `Hero.module.css`; the separate BentoGrid component has been removed by user request.
+- Hero contains five populated translucent cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
 - The grid currently uses a fixed aspect ratio and proportional rows. At the maximum grid width, the bottom cards are approximately 100 px tall. They cannot comfortably carry a normal headline, description, CTA, and large asset together.
-- `src/index.css` uses Onest and a deeper blue accent. Hero background colors are `#224F91`, `#456BC5`, and `#7C9BDF`.
+- `src/assets/index.css` uses Onest and a deeper blue accent. Hero background colors are `#224F91`, `#456BC5`, and `#7C9BDF`.
 - The lower home-page section is empty. Navigation, product catalog, and information architecture are not established yet.
 - Hero action labels are present, but buttons are disabled pending actual product destinations/flows. Cards use plain `div` containers rather than `article`; they are offer tiles within a shared section. Do not link them to nonexistent sections.
 
@@ -96,9 +96,10 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 
 ## Buttons and animation
 
-- `src/components/Button.tsx` accepts native button props (including refs, handlers, disabled state, and type), a typed `variant`, and an optional decorative `icon`. Default variant: `primary`; default type: `button`.
-- Hero, card, responsive layout, Button, ambient background, phone frame, and both pages use local CSS Modules. `src/index.css` contains a small global reset replacing Tailwind Preflight, font loading, shared color tokens, and global rules. No Tailwind utilities or dependencies remain.
-- Button variants, states, and the text underline pseudo-element are defined in `src/components/Button.module.css`. `Button.tsx` selects a local class by its typed variant. Color tokens remain in `src/index.css`: `--accent`, `--accent-hover`, `--accent-soft`, and `--accent-soft-hover`.
+- Interface icons use `lucide-react`, selected to complement Onest and the restrained visual style. Hero imports `ArrowRight` directly; the custom `ArrowIcon` wrapper has been removed. Current action icons use 20px size, Lucide's default 2-unit stroke, and `currentColor`. Import only individual icons; decorative icons remain `aria-hidden`. [Lucide React documentation](https://lucide.dev/guide/react).
+- `src/components/Button/Button.tsx` accepts native button props (including refs, handlers, disabled state, and type), a typed `variant`, and an optional decorative `icon`. Default variant: `primary`; default type: `button`.
+- Hero, card, responsive layout, Button, ambient background, phone frame, and both pages use local CSS Modules. `src/assets/index.css` contains a small global reset replacing Tailwind Preflight, font loading, shared color tokens, and global rules. No Tailwind utilities or dependencies remain.
+- Button variants, states, and the text underline pseudo-element are defined in `src/components/Button/Button.module.css`. `Button.tsx` selects a local class by its typed variant. Color tokens remain in `src/assets/index.css`: `--accent`, `--accent-hover`, `--accent-soft`, and `--accent-soft-hover`.
 - Hero demonstrates primary for the card offer, text for cashback, and secondary for savings. Actions remain disabled until destinations/flows exist; disabled buttons do not animate on hover.
 - Text underline and color hovers use CSS transitions (200 ms, ease-out), with keyboard focus support and `prefers-reduced-motion` handling. Hover effects respect the browser's hover capability and disabled state.
 - The user proposed Framer Motion for the project's animation system. Recommendation pending discussion: use its current Motion for React package (`motion`, imported from `motion/react`) for React transitions, layout changes, gestures, and coordinated sequences; keep simple independent hover effects in CSS. Motion has not been installed yet because this change only needs CSS transitions.
@@ -108,7 +109,7 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 
 - Keep source lines at or below 100 characters, use short readable class composition, and render element text on its own line between opening and closing JSX tags.
 - The user approved the readability refactor. These conventions are also recorded in root `AGENTS.md` for future tasks.
-- Keep component styling in neighboring CSS Modules, using clear local class names and direct `styles.name` references in JSX. Reuse CSS classes within the module and extract reusable components when repeated structure or behavior warrants them. Avoid opaque TSX style-string constants and do not reintroduce Tailwind without agreement.
+- Keep each component/page and its CSS Module together in a folder, matching the current user-organized structure. Keep the offer grid inside Hero rather than a separate BentoGrid component. Keep component styling in CSS Modules, using clear local class names and direct `styles.name` references in JSX. Reuse CSS classes within the module and extract reusable components when repeated structure or behavior warrants them. Avoid opaque TSX style-string constants and do not reintroduce Tailwind without agreement.
 - Use a consistent typography, spacing, and radius scale rather than unnecessary `clamp()` typography. Preserve the existing responsive breakpoints (40rem, 48rem, 64rem) and meaningful layout constraints such as the grid proportions and viewport-based section height.
 - Let headings wrap naturally through available width instead of inserting presentational `br` tags. `br` is valid HTML for intentional line breaks, but is unnecessary in these Hero headings.
 - Prefer plain `div` containers for offer tiles. Use `article` only for content intended to stand independently; do not choose semantic elements for visual styling.

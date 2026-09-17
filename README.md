@@ -17,18 +17,19 @@ Open http://127.0.0.1:5173. Vite serves the app on localhost. Production build: 
 
 ## Structure
 
-- `src/pages/HomePage.tsx` composes the home page.
-- `src/components/Hero.tsx` configures the visual Hero.
-- `src/components/AmbientBackground.tsx` exposes colors, intensity, focus, aperture, speed, autoplay and static-frame time as props.
+- `src/pages/HomePage/HomePage.tsx` composes the home page.
+- `src/components/HomePage/Hero.tsx` configures the visual Hero.
+- `src/components/AmbientBackground/AmbientBackground.tsx` exposes colors, intensity, focus, aperture, speed, autoplay and static-frame time as props.
 - `src/lib/background.ts` owns the Three.js renderer lifecycle.
 
 One impulse plays at startup and then settles. Reduced-motion preferences select a static sample. Hidden tabs suspend rendering without advancing the event, and CSS provides a color-aware fallback if WebGL is unavailable.
 
 ## Styling
 
-Component and page styles live in neighboring CSS Modules (`Component.module.css`), imported
-as `styles` in TSX. Keep local states, pseudo-elements, and media queries in these files.
-`src/index.css` is reserved for the global reset, fonts, shared color tokens, and global rules.
+Each styled component/page and its CSS Module share a folder (for example,
+`Button/Button.tsx` and `Button/Button.module.css`), imported as `styles` in TSX.
+The offer grid lives directly inside Hero and uses `Hero.module.css`. Keep local states, pseudo-elements, and media queries in these files.
+`src/assets/index.css` is reserved for the global reset, fonts, shared color tokens, and global rules.
 The project does not use Tailwind. See `AGENTS.md` for code conventions and `PROJECT.md` for
 shared design decisions.
 

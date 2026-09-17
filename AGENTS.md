@@ -8,8 +8,11 @@ Keep important agreed decisions there for future tasks.
 - Keep source lines at or below 100 characters.
 - Use readable class names and keep JSX class composition short.
 - Put JSX text on its own line between opening and closing tags.
-- Use CSS Modules beside each styled component or page (`Component.module.css`).
-  Keep `src/index.css` limited to global reset, font loading, shared tokens, and global rules.
+- Put each component/page and its CSS Module in a shared folder.
+  Follow the existing layout, such as `Button/Button.tsx` and `Button/Button.module.css`.
+  Keep `src/assets/index.css` limited to reset, font loading, shared tokens, and global rules.
+- Keep the Hero offer grid directly inside `components/HomePage/Hero.tsx`;
+  its styles belong in `Hero.module.css`. Do not extract a separate BentoGrid component.
 - Use a consistent typography and spacing scale; avoid unnecessary `clamp()` expressions.
   Preserve the existing 40rem, 48rem, and 64rem responsive breakpoints where applicable.
 - Let headings wrap naturally. Use `br` only when the content requires an intentional line break.
@@ -22,6 +25,9 @@ Keep important agreed decisions there for future tasks.
   do not reintroduce utility frameworks or global component selectors without agreement.
 - Keep component states, pseudo-elements, and responsive rules in the same local module.
   Preserve keyboard focus, disabled states, hover capability checks, and reduced-motion support.
+- Use named imports from `lucide-react` for standard interface icons, directly in JSX.
+  Current action icons use 20px size, the default 2-unit stroke, and inherited text color.
+  Keep decorative icons hidden from assistive technologies; label icon-only actions themselves.
 
 ## Scope and communication
 

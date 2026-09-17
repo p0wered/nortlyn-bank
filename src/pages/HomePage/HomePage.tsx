@@ -1,4 +1,4 @@
-import { Hero } from '../components/Hero';
+import { Hero } from '../../components/HomePage/Hero.tsx';
 import styles from './HomePage.module.css';
 
 export function HomePage() {

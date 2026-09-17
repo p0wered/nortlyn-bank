@@ -1,4 +1,4 @@
-import { PhoneFrame } from '../components/PhoneFrame';
+import { PhoneFrame } from '../../components/PhoneFrame/PhoneFrame.tsx';
 import styles from './AppPage.module.css';
 
 export function AppPage() {
