@@ -1,0 +1,20 @@
+.hero {
+  position: relative;
+  display: flex;
+  min-height: 94dvh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 2.5rem 1.125rem 4rem;
+}
+
+.grid {
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 48rem) {
+  .hero {
+    padding: 4rem 1.5rem 6rem;
+  }
+}

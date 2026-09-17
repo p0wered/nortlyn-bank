@@ -1,6 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { createBackground } from '../lib/background';
 import { BACKGROUND_COLORS, type BackgroundOptions } from '../lib/types';
+import styles from './AmbientBackground.module.css';
 
 export type AmbientBackgroundProps = BackgroundOptions & { className?: string };
 
@@ -38,12 +39,12 @@ export function AmbientBackground({
 
   return (
     <div
-      className={`absolute inset-0 bg-[radial-gradient(ellipse_at_88%_16%,var(--ambient-glow),transparent_58%),linear-gradient(145deg,var(--ambient-shadow),var(--ambient-lift))] ${className}`.trim()}
+      className={`${styles.background} ${className}`}
       style={style}
       aria-hidden="true"
     >
-      <canvas ref={canvasRef} className="block size-full" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_103%_92%,rgba(188,183,255,0.42),transparent_47%),radial-gradient(ellipse_at_90%_4%,rgba(100,153,255,0.2),transparent_42%)] mix-blend-screen" />
+      <canvas ref={canvasRef} className={styles.canvas} />
+      <div className={styles.overlay} />
     </div>
   );
 }

@@ -1,0 +1,21 @@
+.page {
+  display: flex;
+  height: 100dvh;
+  min-height: 36rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 1rem;
+  background: #f2f3f5;
+}
+
+.screen {
+  min-height: 100%;
+  background: white;
+}
+
+@media (min-width: 40rem) {
+  .page {
+    padding: 1.5rem;
+  }
+}

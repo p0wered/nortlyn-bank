@@ -1,0 +1,186 @@
+.grid {
+  display: grid;
+  width: 100%;
+  max-width: 64rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.card {
+  display: flex;
+  min-width: 0;
+  justify-content: space-between;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(64px);
+}
+
+.mainCard {
+  grid-column: span 2;
+  grid-row-start: 1;
+  min-height: 20rem;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.75rem;
+  background: var(--hero-surface-main);
+}
+
+.mainCopy {
+  max-width: 24rem;
+}
+
+.mainHeading {
+  font-size: 2.25rem;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.mainDescription {
+  max-width: 20rem;
+  margin-top: 1.25rem;
+  color: var(--hero-copy);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.cashbackCard,
+.savingsCard {
+  grid-column: span 2;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.cashbackCard {
+  grid-row-start: 2;
+  min-height: 13rem;
+  background: var(--hero-surface);
+}
+
+.savingsCard {
+  grid-row-start: 3;
+  min-height: 12rem;
+  background: var(--hero-surface-savings);
+}
+
+.heading {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.description {
+  margin-top: 0.875rem;
+  color: var(--hero-copy);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.shortCard {
+  grid-row-start: 4;
+  min-height: 6.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.125rem;
+  background: var(--hero-surface);
+}
+
+.sharedExpensesCard {
+  grid-column-start: 1;
+}
+
+.transfersCard {
+  grid-column-start: 2;
+}
+
+.shortHeading {
+  font-size: 1rem;
+  line-height: 1.375;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.shortArrow {
+  flex-shrink: 0;
+  align-self: flex-end;
+  color: var(--accent);
+}
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 210px 98px 98px;
+    gap: 0.875rem;
+  }
+
+  .mainCard {
+    grid-row: span 2 / span 2;
+    grid-row-start: 1;
+    min-height: 0;
+    padding: 2rem;
+  }
+
+  .mainHeading {
+    font-size: 3rem;
+  }
+
+  .cashbackCard,
+  .savingsCard {
+    grid-column: 3 / span 1;
+    min-height: 0;
+  }
+
+  .cashbackCard {
+    grid-row-start: 1;
+  }
+
+  .savingsCard {
+    grid-row: 2 / span 2;
+  }
+
+  .shortCard {
+    grid-row-start: 3;
+    min-height: 0;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .shortArrow {
+    align-self: auto;
+  }
+}
+
+@media (min-width: 64rem) {
+  .grid {
+    aspect-ratio: 828 / 400;
+    grid-template-rows: 192fr 90fr 82fr;
+    gap: 1.125rem;
+  }
+
+  .card {
+    border-radius: 2rem;
+  }
+
+  .mainCard {
+    padding: 2.25rem;
+  }
+
+  .cashbackCard,
+  .savingsCard {
+    padding: 1.75rem;
+  }
+
+  .heading {
+    font-size: 1.875rem;
+  }
+
+  .shortCard {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .shortHeading {
+    font-size: 1.125rem;
+  }
+}

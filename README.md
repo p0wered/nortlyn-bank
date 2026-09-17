@@ -24,6 +24,14 @@ Open http://127.0.0.1:5173. Vite serves the app on localhost. Production build: 
 
 One impulse plays at startup and then settles. Reduced-motion preferences select a static sample. Hidden tabs suspend rendering without advancing the event, and CSS provides a color-aware fallback if WebGL is unavailable.
 
+## Styling
+
+Component and page styles live in neighboring CSS Modules (`Component.module.css`), imported
+as `styles` in TSX. Keep local states, pseudo-elements, and media queries in these files.
+`src/index.css` is reserved for the global reset, fonts, shared color tokens, and global rules.
+The project does not use Tailwind. See `AGENTS.md` for code conventions and `PROJECT.md` for
+shared design decisions.
+
 ## Rendering
 
 - A 300 × 300 segmented Three.js mesh is displaced in the vertex shader. Finite differences of the same height function produce surface normals. Yarn coordinates stay attached to the mesh.
