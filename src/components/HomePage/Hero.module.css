@@ -13,7 +13,7 @@
   z-index: 10;
   display: grid;
   width: 100%;
-  max-width: 64rem;
+  max-width: 68rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
@@ -22,19 +22,26 @@
   display: flex;
   min-width: 0;
   justify-content: space-between;
-  border: 1px solid rgb(255 255 255 / 40%);
   border-radius: 1.5rem;
   backdrop-filter: blur(64px);
+  background: rgb(255 255 255 / 0.85);
+  transition: background-color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    background: rgb(255 255 255 / 0.95);
+    cursor: pointer;
+  }
 }
 
 .mainCard {
   grid-column: span 2;
   grid-row-start: 1;
-  min-height: 20rem;
+  min-height: 22rem;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1.75rem;
-  background: var(--hero-surface-main);
+  padding: 1.25rem;
 }
 
 .mainCopy {
@@ -43,15 +50,14 @@
 
 .mainHeading {
   font-size: 2.25rem;
-  line-height: 1.25;
-  font-weight: 500;
+  line-height: 1.1;
+  font-weight: 600;
   letter-spacing: -0.025em;
 }
 
 .mainDescription {
   max-width: 20rem;
   margin-top: 1.25rem;
-  color: var(--hero-copy);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -65,38 +71,34 @@
 
 .cashbackCard {
   grid-row-start: 2;
-  min-height: 13rem;
-  background: var(--hero-surface);
+  min-height: 14rem;
 }
 
 .savingsCard {
   grid-row-start: 3;
-  min-height: 12rem;
-  background: var(--hero-surface-savings);
+  min-height: 13rem;
 }
 
 .heading {
   font-size: 1.5rem;
   line-height: 1.25;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.025em;
 }
 
 .description {
   margin-top: 0.875rem;
-  color: var(--hero-copy);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .shortCard {
   grid-row-start: 4;
-  min-height: 6.5rem;
+  min-height: 7rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1.125rem;
-  background: var(--hero-surface);
 }
 
 .sharedExpensesCard {
@@ -127,7 +129,7 @@
 
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: 210px 98px 98px;
+    grid-template-rows: 226px 106px 106px;
     gap: 0.875rem;
   }
 

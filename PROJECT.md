@@ -15,6 +15,7 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 - User references: [Alfa Bank](https://alfabank.ru/), [Sber](https://www.sberbank.ru/), [VTB](https://www.vtb.ru/), [Monobank](https://monobank.ua/en/). These are references for banking content and asset direction, not templates to copy.
 - Implementation scope: fill the **Hero cards only**, with updated typography and a deeper blue accent. The user explicitly clarified that other sections must remain empty. Do not add product sections, app marketing, FAQ, footer, or navigation as part of this task.
 - Do not generate assets yet. Preserve space for future assets without adding substitute illustrations.
+- Hero card blocks are slightly larger at the user's request, with text and typography unchanged.
 - Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page and its `.module.css` share a folder, following the user's organization; `src/assets/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
 - Buttons use a reusable `Button` component with `primary`, `secondary`, and `text` variants. Primary uses the brand accent; secondary uses a pale blue surface with accent text and a pill shape inspired by the supplied VTB button screenshot; text uses accent-colored text with a line revealing from left to right on hover or keyboard focus.
 
@@ -96,13 +97,25 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 
 ## Buttons and animation
 
+- Hero entrance revision (2026-09-18, visual approval pending): the user requested calmer,
+  Apple-inspired motion. `useHeroEntrance.ts` uses the already installed Motion mini runtime
+  and zero-bounce springs. Cards rise 28px from scale 0.97 over 700ms, staggered by 60ms;
+  the grid itself stays still. Each card's heading and description move together by 6px,
+  starting 80ms after the surface; the main action follows at 140ms. Content springs take
+  500ms; opacity takes 240ms with the existing strong ease-out curve. The full desktop
+  sequence settles in 940ms. No perspective, rotations, central expansion, or heading masks.
+  On mobile, cards rise 18px without scale, once they enter the viewport. Reduced motion
+  retains a simultaneous 150ms fade. Focus, resize, and motion preference changes reveal
+  all content immediately. Hover transitions target background-color only and require a
+  fine pointer with hover support.
 - Interface icons use `lucide-react`, selected to complement Onest and the restrained visual style. Hero imports `ArrowRight` directly; the custom `ArrowIcon` wrapper has been removed. Current action icons use 20px size, Lucide's default 2-unit stroke, and `currentColor`. Import only individual icons; decorative icons remain `aria-hidden`. [Lucide React documentation](https://lucide.dev/guide/react).
 - `src/components/Button/Button.tsx` accepts native button props (including refs, handlers, disabled state, and type), a typed `variant`, and an optional decorative `icon`. Default variant: `primary`; default type: `button`.
 - Hero, card, responsive layout, Button, ambient background, phone frame, and both pages use local CSS Modules. `src/assets/index.css` contains a small global reset replacing Tailwind Preflight, font loading, shared color tokens, and global rules. No Tailwind utilities or dependencies remain.
 - Button variants, states, and the text underline pseudo-element are defined in `src/components/Button/Button.module.css`. `Button.tsx` selects a local class by its typed variant. Color tokens remain in `src/assets/index.css`: `--accent`, `--accent-hover`, `--accent-soft`, and `--accent-soft-hover`.
 - Hero demonstrates primary for the card offer, text for cashback, and secondary for savings. Actions remain disabled until destinations/flows exist; disabled buttons do not animate on hover.
 - Text underline and color hovers use CSS transitions (200 ms, ease-out), with keyboard focus support and `prefers-reduced-motion` handling. Hover effects respect the browser's hover capability and disabled state.
-- The user proposed Framer Motion for the project's animation system. Recommendation pending discussion: use its current Motion for React package (`motion`, imported from `motion/react`) for React transitions, layout changes, gestures, and coordinated sequences; keep simple independent hover effects in CSS. Motion has not been installed yet because this change only needs CSS transitions.
+- Motion is installed. Hero uses `motion/mini` for native element animations and the spring
+  generator from `motion`; simple independent hover effects remain in CSS.
 - Motion guidance: [installation](https://motion.dev/docs/react-installation), [CSS versus Motion](https://motion.dev/docs/react), [reduced motion](https://motion.dev/docs/react-accessibility). For Nortlyn's calm tone, favor short restrained transitions and springs without conspicuous bounce. Keep the existing Three.js background animation in its current engine.
 
 ## Working agreement
