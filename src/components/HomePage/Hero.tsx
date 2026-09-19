@@ -1,5 +1,6 @@
 import { AmbientBackground } from '../AmbientBackground/AmbientBackground.tsx';
 import { Button } from '../Button/Button.tsx';
+import heroDebitCardAsset from '../../assets/images/hero-debit-card-concept-v1.webp';
 import styles from './Hero.module.css';
 
 export function Hero() {
@@ -30,43 +31,55 @@ export function Hero() {
               Покупки, переводы и кешбэк — в одном приложении.
             </p>
           </div>
+          <img
+            className={styles.mainAsset}
+            src={heroDebitCardAsset}
+            alt=""
+            aria-hidden="true"
+          />
           <Button className={styles.mainAction}>
             Оформить карту
           </Button>
         </div>
 
-        <div className={`${styles.card} ${styles.cashbackCard}`}>
-          <div className={styles.supportingCopy}>
-            <h2 className={styles.heading}>
-              Кешбэк на ваши планы
-            </h2>
-            <p className={styles.description}>
-              Выбирайте категории каждый месяц.
-            </p>
+        <div
+          className={styles.offerRail}
+          role="region"
+          aria-label="Другие предложения"
+        >
+          <div className={`${styles.card} ${styles.cashbackCard}`}>
+            <div className={styles.supportingCopy}>
+              <h2 className={styles.heading}>
+                Много кешбэка
+              </h2>
+            </div>
           </div>
-        </div>
 
-        <div className={`${styles.card} ${styles.savingsCard}`}>
-          <div className={styles.supportingCopy}>
-            <h2 className={styles.heading}>
-              Копите на своё
-            </h2>
-            <p className={styles.description}>
-              Накопительный счёт для ваших целей.
-            </p>
+          <div className={`${styles.card} ${styles.savingsCard}`}>
+            <div className={styles.supportingCopy}>
+              <h2 className={styles.heading}>
+                Копите на своё
+              </h2>
+            </div>
           </div>
-        </div>
 
-        <div className={`${styles.card} ${styles.shortCard} ${styles.sharedExpensesCard}`}>
-          <h2 className={styles.shortHeading}>
-            Делите расходы с друзьями
-          </h2>
-        </div>
+          <div className={styles.utilityGroup}>
+            <div
+              className={`${styles.card} ${styles.shortCard} ${styles.sharedExpensesCard}`}
+            >
+              <h2 className={styles.shortHeading}>
+                Делите расходы с друзьями
+              </h2>
+            </div>
 
-        <div className={`${styles.card} ${styles.shortCard} ${styles.transfersCard}`}>
-          <h2 className={styles.shortHeading}>
-            Переводы по номеру телефона
-          </h2>
+            <div
+              className={`${styles.card} ${styles.shortCard} ${styles.transfersCard}`}
+            >
+              <h2 className={styles.shortHeading}>
+                Переводы по номеру телефона
+              </h2>
+            </div>
+          </div>
         </div>
       </div>
     </section>

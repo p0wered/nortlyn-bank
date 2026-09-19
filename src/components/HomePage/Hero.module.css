@@ -14,7 +14,7 @@
   display: grid;
   width: 100%;
   max-width: 68rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
 }
 
@@ -24,28 +24,76 @@
   justify-content: space-between;
   border-radius: 1.5rem;
   backdrop-filter: blur(64px);
-  background: rgb(255 255 255 / 0.85);
-  transition: background-color 200ms ease;
+  background: white;
+  transition: 200ms ease-in-out;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
-    background: rgb(255 255 255 / 0.95);
     cursor: pointer;
   }
 }
 
 .mainCard {
-  grid-column: span 2;
+  position: relative;
+  grid-column: 1;
   grid-row-start: 1;
-  min-height: 22rem;
+  min-height: 0;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 1.25rem;
+  align-items: center;
+  overflow: hidden;
+  padding: 1.75rem;
+}
+
+.mainCopy,
+.mainAction {
+  position: relative;
+  z-index: 2;
 }
 
 .mainCopy {
   max-width: 24rem;
+  text-align: center;
+}
+
+.mainAction {
+  align-self: center;
+}
+
+.mainAsset {
+  position: relative;
+  z-index: 1;
+  width: calc(100% + 5rem);
+  height: auto;
+  flex-shrink: 0;
+  margin: -1rem -2.5rem -1.25rem;
+  pointer-events: none;
+  user-select: none;
+}
+
+.offerRail {
+  display: flex;
+  width: calc(100% + 1.125rem);
+  min-width: 0;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  margin-right: -1.125rem;
+  padding-right: 3.5rem;
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+}
+
+.offerRail::-webkit-scrollbar {
+  display: none;
+}
+
+.offerRail > .card,
+.utilityGroup {
+  flex: 0 0 calc(100% - 4.25rem);
+  min-height: 10.5rem;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .mainHeading {
@@ -60,6 +108,33 @@
   margin-top: 1.25rem;
   font-size: 1rem;
   line-height: 1.5;
+}
+
+@media (max-width: 47.999rem) {
+  .utilityGroup {
+    display: grid;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    background: white;
+  }
+
+  .utilityGroup > .shortCard {
+    grid-column: auto;
+    grid-row: auto;
+    min-height: 0;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--accent-soft) 40%, white);
+  }
+
+  .utilityGroup .shortHeading {
+    max-width: 14rem;
+    font-size: 0.9375rem;
+  }
 }
 
 .cashbackCard,
@@ -90,6 +165,7 @@
   margin-top: 0.875rem;
   font-size: 1rem;
   line-height: 1.5;
+  max-width: 12rem;
 }
 
 .shortCard {
@@ -114,6 +190,7 @@
   line-height: 1.375;
   font-weight: 500;
   letter-spacing: -0.025em;
+  max-width: 10rem;
 }
 
 .shortArrow {
@@ -134,10 +211,39 @@
   }
 
   .mainCard {
+    grid-column: span 2;
     grid-row: span 2 / span 2;
     grid-row-start: 1;
     min-height: 0;
+    align-items: flex-start;
     padding: 2rem;
+  }
+
+  .mainAction {
+    align-self: flex-start;
+  }
+
+  .mainAsset {
+    position: absolute;
+    right: -4.5rem;
+    bottom: -3rem;
+    width: 70%;
+    margin: 0;
+  }
+
+  .offerRail {
+    display: contents;
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .utilityGroup {
+    display: contents;
+  }
+
+  .mainCopy {
+    text-align: left;
   }
 
   .mainHeading {
@@ -183,6 +289,13 @@
 
   .mainCard {
     padding: 2.25rem;
+  }
+
+  .mainAsset {
+    right: -7.5rem;
+    bottom: -4rem;
+    width: 74%;
+    max-width: 34rem;
   }
 
   .cashbackCard,

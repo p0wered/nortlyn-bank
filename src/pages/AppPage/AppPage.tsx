@@ -5,7 +5,8 @@ export function AppPage() {
   return (
     <main className={styles.page}>
       <PhoneFrame>
-        <div className={styles.screen} />
+        <div className={styles.screen}>
+        </div>
       </PhoneFrame>
     </main>
   );

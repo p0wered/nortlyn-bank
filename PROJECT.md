@@ -1,6 +1,6 @@
 # Nortlyn Bank — shared project context
 
-Updated: 2026-09-18. This file is the shared context requested by the user. Keep confirmed decisions separate from proposals; update it as discussions continue.
+Updated: 2026-09-19. This file is the shared context requested by the user. Keep confirmed decisions separate from proposals; update it as discussions continue.
 
 ## Confirmed decisions
 
@@ -12,9 +12,17 @@ Updated: 2026-09-18. This file is the shared context requested by the user. Keep
 - Accent color should be deeper and more saturated blue than the initial pale proposal. Current implementation uses `#356AE6`; final visual approval is pending.
 - Onest is now self-hosted in `public/fonts/onest-variable.ttf`, with its OFL license alongside it. It replaces the system-font placeholder.
 - Hero cards act as a curated showcase of offers and news, with visual assets to be added later.
+- The main Hero acquisition offer is a debit card, not an app-first message.
+- Asset language: recognizable, product-led 3D objects with simplified believable geometry.
+  Abstract forms may appear only as restrained supporting decoration.
+- Preserve the compact proportions of the two short Hero cards. Their assets must be composed
+  specifically for very small display sizes rather than scaled down from larger scenes.
+- Nortlyn does not yet have an approved logo or symbol. Current assets must not bake in a
+  temporary mark, payment-network logo, cardholder data, or other readable product text.
 - User references: [Alfa Bank](https://alfabank.ru/), [Sber](https://www.sberbank.ru/), [VTB](https://www.vtb.ru/), [Monobank](https://monobank.ua/en/). These are references for banking content and asset direction, not templates to copy.
 - Implementation scope: fill the **Hero cards only**, with updated typography and a deeper blue accent. The user explicitly clarified that other sections must remain empty. Do not add product sections, app marketing, FAQ, footer, or navigation as part of this task.
-- Do not generate assets yet. Preserve space for future assets without adding substitute illustrations.
+- Asset production has started with an unbranded debit-card concept for the main Hero card.
+  The current render is a working visual test, not a final approved asset.
 - Hero card blocks are slightly larger at the user's request, with text and typography unchanged.
 - Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page and its `.module.css` share a folder, following the user's organization; `src/assets/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
 - Hero card surfaces are solid white. The `backdrop-filter: blur(64px)` glass treatment was
@@ -27,6 +35,16 @@ Updated: 2026-09-18. This file is the shared context requested by the user. Keep
 
 - React + TypeScript + Vite SPA, CSS Modules, Three.js ambient background.
 - `src/components/HomePage/Hero.tsx` places the card grid over an animated blue/periwinkle background. The grid markup is directly inside Hero, with all local styles in `Hero.module.css`; the separate BentoGrid component has been removed by user request.
+- The main card currently displays `hero-debit-card-concept-v1.webp`, an optimized transparent
+  WebP derived from the first generated PNG concept. It is decorative and has empty alt text.
+- From 48rem upward, the main-card asset is deliberately oversized and clipped by the card's
+  right and lower edges. On smaller screens it participates in normal document flow between the
+  centered copy and CTA, so the product remains legible instead of disappearing beyond the card.
+- Below 48rem, the main offer remains on a solid white surface for contrast over the animated
+  background. Supporting offers use three equal outer slides in a horizontal scroll-snap rail:
+  cashback, savings, and one compound utility slide containing the two compact actions. The next
+  slide is partially visible. The experimental rail-edge fade was removed after the user found
+  its appearance and scrolling behavior unreliable.
 - Hero contains five populated solid white cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
 - The grid currently uses a fixed aspect ratio and proportional rows. At the maximum grid width, the bottom cards are approximately 100 px tall. They cannot comfortably carry a normal headline, description, CTA, and large asset together.
 - `src/assets/index.css` uses Onest and a deeper blue accent. Hero background colors are `#224F91`, `#456BC5`, and `#7C9BDF`.
@@ -40,7 +58,9 @@ Updated: 2026-09-18. This file is the shared context requested by the user. Keep
 - Alfa screenshot: five-card Hero with a large primary offer, two right cards, and two short lower cards, closely matching the existing Nortlyn grid. Assets mix cards, coins, arrows, gifts, glass-like and metallic surfaces, vivid colors, and photography. The short lower cards show that a short title plus a compact 3D object can work without a description and separate prominent CTA. Product tiles use dense, glossy object groups.
 - Sber screenshot: spacious pale green Hero and page sections; rounded 3D forms, financial symbols, metallic accents, cards, and small object groups. The restrained page spacing is a useful reference, while the busier individual object groups should be simplified for Nortlyn.
 - VTB screenshot: photographic campaign Hero, with smaller, relatively simple 3D product illustrations below: cards, coin/container, banknote bundle, house. These compact product illustrations are the strongest of the three references for Nortlyn's proposed asset complexity. The screenshot also includes photographic offer tiles; photography is not selected for Nortlyn.
-- Revised interpretation: use compact, stylized 3D product illustrations as the main proposed asset language. The initial phone-heavy interpretation based on Monobank is too narrow. A phone can remain an option for app-specific content, but it need not appear throughout the Hero.
+- Revised interpretation: use compact, stylized 3D product illustrations as the main asset
+  language. The initial phone-heavy interpretation based on Monobank is too narrow. A phone can
+  remain an option for app-specific content, but it need not appear throughout the Hero.
 - [Onest](https://onest.md/en) supports Latin and Cyrillic and is available under SIL OFL. [Google Fonts metadata](https://github.com/google/fonts/blob/main/ofl/onest/METADATA.pb) lists a variable weight axis from 100 to 900.
 - [Golos Text](https://github.com/googlefonts/golos-text/blob/main/README.md) is an alternative designed for screen reading, available under SIL OFL.
 
@@ -77,13 +97,18 @@ Updated: 2026-09-18. This file is the shared context requested by the user. Keep
 - If every card requires a substantial 3D asset and supporting copy, revisit the grid proportions rather than shrinking the type to fit.
 - Based on Alfa's short Hero cards, the lower Nortlyn cards can retain compact 3D assets if the copy is reduced to a title and the card itself provides the action. Large scenes with description and separate buttons still require more height.
 
-### Asset system
+### Asset system — direction confirmed, exact execution still being refined
 
-- Recommended primary language after reviewing the supplied screenshots: stylized 3D product illustrations with recognizable silhouettes, simplified geometry, slight perspective, and restrained object counts. This refinement is a proposal, not yet a user-approved asset specification.
+- Primary language after reviewing the supplied screenshots: stylized 3D product illustrations
+  with recognizable silhouettes, simplified geometry, slight perspective, and restrained object
+  counts.
 - Recognizable product objects: branded bank card, savings container, coin, return/transfer arrow. Use a phone specifically when the message is about the app.
 - Shared lighting, camera treatment, material palette, and shadow softness across assets.
 - Revised material recommendation: satin blue/white solids as the base, small silver metallic accents, and selective blue-tinted translucent details. Mild gloss is useful for readable volume; avoid mirror chrome, rainbow/iridescent finishes, and decorative sparkles as defaults.
 - Use one main object, optionally with one or two supporting details, rather than Alfa-like dense groups. Preserve clear negative space for text. Small cards can use one compact 3D illustration.
+- Treat desktop and mobile as related compositions, not identical crops. The cashback and savings
+  assets need standard mobile-slide compositions; the two compact action assets stay small and
+  share the compound utility slide on mobile.
 - Do not add a separate colorful square backing plate to every asset: Nortlyn's existing cards already supply the framing, and the animated background supplies atmosphere.
 - For calmness, rely on consistent light and a limited palette rather than making all objects flat or indistinct. Keep enough tonal separation for the blue asset silhouettes to read over the blue background.
 - No additional looping asset animations are proposed. The existing ambient motion already provides the restrained futuristic element.
@@ -95,9 +120,9 @@ Updated: 2026-09-18. This file is the shared context requested by the user. Keep
 - Brand territory, wordmark / symbol, and whether a permanent tagline is useful.
 - Final visual approval of Onest and the typography scale; Onest is the implemented choice.
 - Hover treatment for the now-opaque Hero cards, and whether they gain a border or a shadow.
-- Main Hero action: debit-card application versus starting with the banking app.
 - Final Hero content, product lineup, fictional terms, and asset subjects.
-- Whether to preserve current grid proportions or enlarge the short cards.
+- Whether the implemented mobile hybrid should remain, or whether a later asset-complete version
+  should remove the main white card and use a fully frameless campaign slider.
 
 ## Buttons and animation
 
