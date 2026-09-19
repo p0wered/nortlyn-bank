@@ -1,6 +1,6 @@
 # Nortlyn Bank — shared project context
 
-Updated: 2026-09-17. This file is the shared context requested by the user. Keep confirmed decisions separate from proposals; update it as discussions continue.
+Updated: 2026-09-18. This file is the shared context requested by the user. Keep confirmed decisions separate from proposals; update it as discussions continue.
 
 ## Confirmed decisions
 
@@ -17,13 +17,17 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 - Do not generate assets yet. Preserve space for future assets without adding substitute illustrations.
 - Hero card blocks are slightly larger at the user's request, with text and typography unchanged.
 - Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page and its `.module.css` share a folder, following the user's organization; `src/assets/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
+- Hero card surfaces are solid white. The `backdrop-filter: blur(64px)` glass treatment was
+  removed at the user's request. Measured before removal: over the smooth gradient background
+  the blur changed the rendered card pixels by at most 13/255, so it cost GPU work without a
+  visible result.
 - Buttons use a reusable `Button` component with `primary`, `secondary`, and `text` variants. Primary uses the brand accent; secondary uses a pale blue surface with accent text and a pill shape inspired by the supplied VTB button screenshot; text uses accent-colored text with a line revealing from left to right on hover or keyboard focus.
 
 ## Current implementation — evidence, not approval
 
 - React + TypeScript + Vite SPA, CSS Modules, Three.js ambient background.
 - `src/components/HomePage/Hero.tsx` places the card grid over an animated blue/periwinkle background. The grid markup is directly inside Hero, with all local styles in `Hero.module.css`; the separate BentoGrid component has been removed by user request.
-- Hero contains five populated translucent cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
+- Hero contains five populated solid white cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
 - The grid currently uses a fixed aspect ratio and proportional rows. At the maximum grid width, the bottom cards are approximately 100 px tall. They cannot comfortably carry a normal headline, description, CTA, and large asset together.
 - `src/assets/index.css` uses Onest and a deeper blue accent. Hero background colors are `#224F91`, `#456BC5`, and `#7C9BDF`.
 - The lower home-page section is empty. Navigation, product catalog, and information architecture are not established yet.
@@ -90,33 +94,23 @@ Updated: 2026-09-17. This file is the shared context requested by the user. Keep
 - Primary audience and the specific value proposition that makes Nortlyn memorable.
 - Brand territory, wordmark / symbol, and whether a permanent tagline is useful.
 - Final visual approval of Onest and the typography scale; Onest is the implemented choice.
-- Exact palette and treatment of the translucent cards over the animated background.
+- Hover treatment for the now-opaque Hero cards, and whether they gain a border or a shadow.
 - Main Hero action: debit-card application versus starting with the banking app.
 - Final Hero content, product lineup, fictional terms, and asset subjects.
 - Whether to preserve current grid proportions or enlarge the short cards.
 
 ## Buttons and animation
 
-- Hero entrance revision (2026-09-18, visual approval pending): the user requested calmer,
-  Apple-inspired motion. `useHeroEntrance.ts` uses the already installed Motion mini runtime
-  and zero-bounce springs. Cards rise 28px from scale 0.97 over 700ms, staggered by 60ms;
-  the grid itself stays still. Each card's heading and description move together by 6px,
-  starting 80ms after the surface; the main action follows at 140ms. Content springs take
-  500ms; opacity takes 240ms with the existing strong ease-out curve. The full desktop
-  sequence settles in 940ms. No perspective, rotations, central expansion, or heading masks.
-  On mobile, cards rise 18px without scale, once they enter the viewport. Reduced motion
-  retains a simultaneous 150ms fade. Focus, resize, and motion preference changes reveal
-  all content immediately. Hover transitions target background-color only and require a
-  fine pointer with hover support.
+- Cards no longer change color on hover. The old hover raised the white alpha from 0.85 to
+  0.95, which has no meaning on a solid white surface. The hover media query now only keeps
+  `cursor: pointer`. A replacement hover treatment is an open decision.
 - Interface icons use `lucide-react`, selected to complement Onest and the restrained visual style. Hero imports `ArrowRight` directly; the custom `ArrowIcon` wrapper has been removed. Current action icons use 20px size, Lucide's default 2-unit stroke, and `currentColor`. Import only individual icons; decorative icons remain `aria-hidden`. [Lucide React documentation](https://lucide.dev/guide/react).
 - `src/components/Button/Button.tsx` accepts native button props (including refs, handlers, disabled state, and type), a typed `variant`, and an optional decorative `icon`. Default variant: `primary`; default type: `button`.
 - Hero, card, responsive layout, Button, ambient background, phone frame, and both pages use local CSS Modules. `src/assets/index.css` contains a small global reset replacing Tailwind Preflight, font loading, shared color tokens, and global rules. No Tailwind utilities or dependencies remain.
 - Button variants, states, and the text underline pseudo-element are defined in `src/components/Button/Button.module.css`. `Button.tsx` selects a local class by its typed variant. Color tokens remain in `src/assets/index.css`: `--accent`, `--accent-hover`, `--accent-soft`, and `--accent-soft-hover`.
 - Hero demonstrates primary for the card offer, text for cashback, and secondary for savings. Actions remain disabled until destinations/flows exist; disabled buttons do not animate on hover.
 - Text underline and color hovers use CSS transitions (200 ms, ease-out), with keyboard focus support and `prefers-reduced-motion` handling. Hover effects respect the browser's hover capability and disabled state.
-- Motion is installed. Hero uses `motion/mini` for native element animations and the spring
-  generator from `motion`; simple independent hover effects remain in CSS.
-- Motion guidance: [installation](https://motion.dev/docs/react-installation), [CSS versus Motion](https://motion.dev/docs/react), [reduced motion](https://motion.dev/docs/react-accessibility). For Nortlyn's calm tone, favor short restrained transitions and springs without conspicuous bounce. Keep the existing Three.js background animation in its current engine.
+- Keep the existing Three.js background animation in its current engine.
 
 ## Working agreement
 
