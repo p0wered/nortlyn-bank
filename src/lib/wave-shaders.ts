@@ -1,4 +1,6 @@
-// Shared by mesh and particles: one event, no periodic time wrapping.
+import { IDLE_PERIOD, IDLE_START, IMPULSE_DURATION } from './types';
+
+// Shared by mesh and particles: one impulse, then periodic idle swells.
 export const waveField = `
 uniform float uTime;
 uniform float uIntensity;
@@ -27,12 +29,26 @@ vec3 wave(vec2 p,float age) {
     -2.0*(front+1.6)*.012*tail)*envelope;
   return vec3(height,light,slope);
 }
+// After the impulse, shallow swells keep rolling out from the same origin.
+// One wavelength passes per idle period, so the field repeats exactly.
+const float idleStart=${IDLE_START.toFixed(1)};
+const float idlePeriod=${IDLE_PERIOD.toFixed(1)};
+const float idleWavelength=4.0;
+vec2 idleSwell(vec2 p,float t) {
+  float radius=length(p-pulseOrigin);
+  float phase=radius/idleWavelength-t/idlePeriod;
+  float crest=pow(.5+.5*cos(phase*6.2831853),6.0);
+  return vec2(.03,.45)*crest*smoothstep(5.5,idleStart,t);
+}
+vec3 motion(vec2 p,float t) { return wave(p,t)+vec3(idleSwell(p,t),0.0); }
 float restHeight(vec2 p) { return .035*sin(p.x*.65+p.y*.35)+.022*cos(p.y*.8); }
-float clothHeight(vec2 p) { return restHeight(p)+wave(p,uTime).x; }
+float clothHeight(vec2 p) { return restHeight(p)+motion(p,uTime).x; }
+// Focus follows the impulse crest out of frame; idle swells stay soft.
+float focusRadius() { return pulseRadius(min(uTime,${IMPULSE_DURATION.toFixed(1)})); }
 // Art-directed curved focus surface follows the annular crest. A conventional
 // planar focal plane cannot keep this whole tilted ring sharp simultaneously.
 float blurRadius(vec3 world,float depth) {
-  float signedOffset=length(world.xz-pulseOrigin)-pulseRadius(uTime);
+  float signedOffset=length(world.xz-pulseOrigin)-focusRadius();
   float radialOffset=abs(signedOffset);
   // A broad, symmetric shoulder keeps the transition even across the crest.
   // The rational falloff approaches full blur slowly, without a steep shoulder.
@@ -80,7 +96,7 @@ float softNoise(vec2 p) {
     mix(hash(cell+vec2(0,1)),hash(cell+vec2(1,1)),f.x),f.y);
 }
 void main() {
-  vec3 event=wave(vWorld.xz,uTime);
+  vec3 event=motion(vWorld.xz,uTime);
   vec3 normal=normalize(vNormal);
   vec3 view=normalize(cameraPosition-vWorld);
   vec3 light=normalize(vec3(-.5,1.0,-.4));
@@ -131,8 +147,8 @@ varying float vDefocus;
 varying float vTint;
 void main() {
   vec2 anchor=position.xz;
-  vec3 event=wave(anchor,uTime);
-  vec3 delayed=wave(anchor,max(0.0,uTime-.10));
+  vec3 event=motion(anchor,uTime);
+  vec3 delayed=motion(anchor,max(0.0,uTime-.10));
   vec2 delta=anchor-pulseOrigin;
   vec2 radial=delta/max(length(delta),.0001);
   vec2 drift=radial*delayed.z*.035;

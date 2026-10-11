@@ -40,12 +40,15 @@ See `AGENTS.md` for code conventions and `PROJECT.md` for shared design decision
 React owns page composition; the background stays an imperative Three.js engine.
 `createBackground(canvas, options)` returns only `dispose()` for unmount cleanup.
 
-- A 300 × 300 segmented cloth mesh is displaced in the vertex shader by a single circular
-  wave impulse that plays once at startup and then settles.
+- A 300 × 300 segmented cloth mesh is displaced in the vertex shader by a circular wave impulse
+  that plays once at startup; focus leaves the frame with its crest. Shallow, soft-focus idle
+  swells then keep rolling out from the same origin; from `IDLE_START` the field repeats every
+  `IDLE_PERIOD` seconds.
 - 1,800 seeded dust particles are anchored above the cloth and follow the same wave.
 - A post pass applies a 64-sample depth-of-field blur and a 12-sample highlight halo.
 - DPR is capped at 1.5 and the render buffer at about 1.8 million pixels.
-- Reduced-motion preferences show a static frame. Hidden tabs suspend rendering.
+- Idle frames render at about 30 fps. Reduced-motion preferences show a static frame.
+  Hidden tabs and an offscreen canvas suspend rendering.
   If WebGL is unavailable or the context is lost, a CSS gradient in the same colors remains.
 
 Physical phone performance has not been measured.

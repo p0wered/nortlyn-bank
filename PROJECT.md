@@ -31,10 +31,18 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   implemented value over the earlier documented `#2855C2`.
 - Onest is self-hosted as `public/fonts/onest-variable.woff2` (variable weight, converted from
   the TTF without subsetting), with its OFL license alongside it.
-- Hero card surfaces are solid white. The `backdrop-filter: blur(64px)` glass treatment was
-  removed at the user's request: over the smooth gradient background it changed rendered card
-  pixels by at most 13/255, so it cost GPU work without a visible result.
+- Hero card surfaces are frosted: 72% white with `backdrop-filter: blur(24px)`, so the ambient
+  background shows through. This reverses the earlier solid-white decision at the user's request
+  (2026-10-11). An earlier opaque-white-over-blur version was dropped because the blur was
+  invisible behind an opaque surface.
 - Keep the existing Three.js background animation in its current engine.
+- The background has an idle state (2026-10-11). The startup impulse plays as before and focus
+  leaves the frame with its crest; shallow, soft-focus swells then keep rolling out from the
+  impulse origin as a slow breathing motion. A focus rack that brought a sharp crest band back
+  into frame was tried and rejected by the user. Idle renders at about 30 fps and stops while the Hero is offscreen or
+  the tab is hidden. Reduced motion still shows one static frame.
+- The bento grid stays. A frameless main offer on the background (direction “B”) was tried on
+  2026-10-11 and rejected by the user after seeing it.
 
 ### Hero content and layout
 
@@ -52,7 +60,7 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - The supporting slides get no action buttons, and the two compact actions get no arrow icon.
   The user explicitly rejected both after seeing them; do not reintroduce them without a request.
   The only action in Hero is the main CTA, using the `primary` Button variant.
-- The compound utility slide stays compound on mobile: one white surface with the shared 1.5rem
+- The compound utility slide stays compound on mobile: one frosted surface with the shared 1.5rem
   padding and two equal rows separated by a hairline `--accent-soft` divider. Nested pale-blue
   boxes inside a white wrapper were rejected as reading like a different component.
 - The offer rail gets no pagination dots and no edge fade. The slide bleeding past the screen
@@ -96,7 +104,7 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - React + TypeScript + Vite single-page app with one page, CSS Modules, and a Three.js ambient
   background. Hero background colors: shadow `#5288D3`, lift `#C1B7E4`, glow `#5D71D1`; the
   same values are the defaults in `src/lib/types.ts`.
-- Hero contains five solid white cards: everyday card, cashback, savings, shared expenses, and
+- Hero contains five frosted cards: everyday card, cashback, savings, shared expenses, and
   phone-number transfers. Desktop: one large left card, two right cards, and two short cards
   below the large card.
 - The desktop grid height follows its width, not its content: four 106 px rows from 48rem,
@@ -107,7 +115,7 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   alt text. From 48rem upward the image box extends past the card's right and lower edges and is
   clipped; at 1280 px only the ribbon tip reaches the right edge, and the clipped lower part is
   transparent margin. Below 48rem the asset sits in normal flow between the copy and the CTA.
-- Below 48rem the main offer stays on a white card, and the supporting offers form a horizontal
+- Below 48rem the main offer stays on a frosted card, and the supporting offers form a horizontal
   scroll-snap rail of three equal slides: cashback, savings, and the compound utility slide.
   The rail bleeds past both page gutters; `Hero.module.css` explains the padding and
   scroll-padding pairing. Slide width is `calc(100% - 3.5rem)`, leaving about 62 px of the next
@@ -228,8 +236,6 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - Final visual approval of Onest and the typography scale.
 - Hover treatment for the opaque Hero cards: whether they gain a border or a shadow.
 - Final Hero content, product lineup, fictional terms, and asset subjects.
-- Whether the mobile hybrid should remain, or whether a later asset-complete version should
-  remove the main white card and use a fully frameless campaign slider.
 - Whether the main CTA should stay enabled without a destination, and whether the supporting
   slides should gain actions once real destinations exist.
 

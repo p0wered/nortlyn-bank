@@ -1,4 +1,7 @@
 export const IMPULSE_DURATION = 7.6;
+// Idle swells fade in after the impulse; from IDLE_START the field repeats every IDLE_PERIOD.
+export const IDLE_START = 9;
+export const IDLE_PERIOD = 14;
 export const REFERENCE_TIME = 0.35;
 
 export const BACKGROUND_COLORS = {

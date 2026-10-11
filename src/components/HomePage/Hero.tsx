@@ -3,11 +3,16 @@ import { Button } from '../Button/Button.tsx';
 import heroDebitCardAsset from '../../assets/images/hero-debit-card-scene-v4-metal-ribbon.webp';
 import styles from './Hero.module.css';
 
+// Temporary: compare the mobile layouts with ?mobile=open or ?mobile=sheet.
+// Remove once one is chosen.
+const mobileLayout = new URLSearchParams(window.location.search).get('mobile') ?? 'open';
+
 export function Hero() {
   return (
     <section
       className={styles.hero}
       aria-label="Главный экран"
+      data-mobile={mobileLayout}
     >
       <AmbientBackground
         colors={{

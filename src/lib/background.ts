@@ -9,6 +9,8 @@ import {
 } from './wave-shaders';
 import {
   BACKGROUND_COLORS,
+  IDLE_PERIOD,
+  IDLE_START,
   IMPULSE_DURATION,
   REFERENCE_TIME,
   type BackgroundController,
@@ -17,6 +19,9 @@ import {
 
 type Disposable = { dispose: () => void };
 
+// Idle swells are slow, so they render at about 30 fps to spare the GPU.
+const IDLE_FRAME_MS = 1000 / 30;
+
 export function createBackground(
   canvas: HTMLCanvasElement,
   options: BackgroundOptions = {},
@@ -24,12 +29,16 @@ export function createBackground(
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const colors = { ...BACKGROUND_COLORS, ...options.colors };
   const autoPlay = options.autoPlay ?? true;
-  const stillTime = Math.max(0, Math.min(IMPULSE_DURATION, options.stillTime ?? REFERENCE_TIME));
+  const stillTime = Math.max(
+    0,
+    Math.min(IDLE_START + IDLE_PERIOD, options.stillTime ?? REFERENCE_TIME),
+  );
   const speed = options.speed ?? 1;
   let paused = !autoPlay || reduced.matches;
   let disposed = false;
   let failed = false;
   let lost = false;
+  let offscreen = false;
   let time = paused ? stillTime : 0;
   let raf = 0;
   let previous = 0;
@@ -68,8 +77,8 @@ export function createBackground(
   };
 
   function render(): void {
-    if (!renderer || !target || !scene || !camera || !postScene || !postCamera || !particles) return;
-    if (disposed || lost || failed) return;
+    if (!renderer || !target || !scene || !camera || !postScene || !postCamera) return;
+    if (!particles || disposed || lost || failed) return;
     uniforms.uTime.value = time;
     renderer.setRenderTarget(target);
     renderer.clear();
@@ -105,13 +114,23 @@ export function createBackground(
     render();
   }
 
+  function running(): boolean {
+    return !paused && !document.hidden && !offscreen && !disposed && !failed && !lost;
+  }
+
   function frame(now: number): void {
     raf = 0;
-    if (paused || document.hidden || disposed || failed || lost || time >= IMPULSE_DURATION) return;
-    if (previous) time = Math.min(IMPULSE_DURATION, time + Math.min((now - previous) / 1000, 0.05) * speed);
+    if (!running()) return;
+    if (previous && time >= IMPULSE_DURATION && now - previous < IDLE_FRAME_MS) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
+    if (previous) time += Math.min((now - previous) / 1000, 0.05) * speed;
+    // The field is periodic once idle, so wrapping keeps shader time precise.
+    if (time >= IDLE_START + IDLE_PERIOD) time -= IDLE_PERIOD;
     previous = now;
     render();
-    if (time < IMPULSE_DURATION) raf = requestAnimationFrame(frame);
+    raf = requestAnimationFrame(frame);
   }
 
   function sync(): void {
@@ -119,9 +138,12 @@ export function createBackground(
     raf = 0;
     previous = 0;
     render();
-    if (!paused && !document.hidden && !disposed && !failed && !lost && time < IMPULSE_DURATION) {
-      raf = requestAnimationFrame(frame);
-    }
+    if (running()) raf = requestAnimationFrame(frame);
+  }
+
+  function visibilityChange([entry]: IntersectionObserverEntry[]): void {
+    offscreen = !entry.isIntersecting;
+    sync();
   }
 
   function applySceneColor(): void {
@@ -258,6 +280,8 @@ export function createBackground(
 
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
+  const intersection = new IntersectionObserver(visibilityChange);
+  intersection.observe(canvas);
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', motionChange);
   canvas.addEventListener('webglcontextlost', contextLost);
@@ -268,6 +292,7 @@ export function createBackground(
       disposed = true;
       cancelAnimationFrame(raf);
       observer.disconnect();
+      intersection.disconnect();
       document.removeEventListener('visibilitychange', sync);
       reduced.removeEventListener('change', motionChange);
       canvas.removeEventListener('webglcontextlost', contextLost);
