@@ -1,6 +1,6 @@
 import { AmbientBackground } from '../AmbientBackground/AmbientBackground.tsx';
 import { Button } from '../Button/Button.tsx';
-import heroDebitCardAsset from '../../assets/images/hero-debit-card-concept-v1.webp';
+import heroDebitCardAsset from '../../assets/images/hero-debit-card-scene-v4-metal-ribbon.webp';
 import styles from './Hero.module.css';
 
 export function Hero() {
@@ -11,9 +11,9 @@ export function Hero() {
     >
       <AmbientBackground
         colors={{
-          shadow: '#4379bf',
-          lift: '#ada1da',
-          glow: '#6372d1',
+          shadow: '#5288d3',
+          lift: '#c1b7e4',
+          glow: '#5d71d1',
         }}
         intensity={1.1}
         focus={0.36}
@@ -28,7 +28,7 @@ export function Hero() {
               Карта на каждый день
             </h1>
             <p className={styles.mainDescription}>
-              Покупки, переводы и кешбэк — в одном приложении.
+              Покупки, переводы и кешбэк — в&nbsp;одном приложении.
             </p>
           </div>
           <img
@@ -46,12 +46,16 @@ export function Hero() {
           className={styles.offerRail}
           role="region"
           aria-label="Другие предложения"
+          tabIndex={0}
         >
           <div className={`${styles.card} ${styles.cashbackCard}`}>
             <div className={styles.supportingCopy}>
               <h2 className={styles.heading}>
                 Много кешбэка
               </h2>
+              <p className={styles.description}>
+                Выбирайте категории каждый месяц.
+              </p>
             </div>
           </div>
 
@@ -60,6 +64,9 @@ export function Hero() {
               <h2 className={styles.heading}>
                 Копите на своё
               </h2>
+              <p className={styles.description}>
+                Накопительный счёт для ваших целей.
+              </p>
             </div>
           </div>
 

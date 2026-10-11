@@ -23,6 +23,13 @@ Updated: 2026-09-19. This file is the shared context requested by the user. Keep
 - Implementation scope: fill the **Hero cards only**, with updated typography and a deeper blue accent. The user explicitly clarified that other sections must remain empty. Do not add product sections, app marketing, FAQ, footer, or navigation as part of this task.
 - Asset production has started with an unbranded debit-card concept for the main Hero card.
   The current render is a working visual test, not a final approved asset.
+- The selected main-Hero asset direction is the Orbit scene with a matte graphite-black debit
+  card, a thin asymmetric frosted-glass plate, and a flat satin-aluminum ribbon. The earlier thick,
+  glossy C-shaped glass arc was rejected as dated and reminiscent of Windows Aero, with
+  inconsistent perspective. Glass should stay matte, low-contrast, and geometrically aligned
+  with the card. The tubular metal orbit was replaced because the complete ring felt generic and
+  retrofuturistic; use restrained flattened metal profiles instead. The Portal and Balance renders
+  remain exploratory alternatives.
 - Hero card blocks are slightly larger at the user's request, with text and typography unchanged.
 - Styling architecture: CSS Modules instead of Tailwind, explicitly approved by the user. Each styled component/page and its `.module.css` share a folder, following the user's organization; `src/assets/index.css` holds only global reset, fonts, shared tokens, and global rules. Tailwind dependencies and the Vite plugin have been removed.
 - Hero card surfaces are solid white. The `backdrop-filter: blur(64px)` glass treatment was
@@ -30,13 +37,25 @@ Updated: 2026-09-19. This file is the shared context requested by the user. Keep
   the blur changed the rendered card pixels by at most 13/255, so it cost GPU work without a
   visible result.
 - Buttons use a reusable `Button` component with `primary`, `secondary`, and `text` variants. Primary uses the brand accent; secondary uses a pale blue surface with accent text and a pill shape inspired by the supplied VTB button screenshot; text uses accent-colored text with a line revealing from left to right on hover or keyboard focus.
+- The cashback and savings slides carry a short description **below 48rem only**, so the mobile
+  slides are not mostly empty white space. The user explicitly scoped this to mobile; the desktop
+  cards stay heading-only. The descriptions stay in the markup and are hidden with `display: none`
+  from 48rem upward, since the desktop rows are too short to hold them.
+- These slides get no action buttons, and the two compact actions get no arrow icon. The user
+  explicitly rejected both after seeing them; do not reintroduce them without a request.
+- The compound utility slide stays compound on mobile. Its internals were aligned with the other
+  slides: one white surface with the shared 1.5rem padding and two equal rows separated by a
+  hairline `--accent-soft` divider. The previous nested pale-blue boxes inside a white wrapper
+  read as a different component from the other slides.
+- The offer rail gets no pagination dots. The slide bleeding past the screen edge is the scroll
+  affordance, which suits the agreed calm tone.
 
 ## Current implementation — evidence, not approval
 
 - React + TypeScript + Vite SPA, CSS Modules, Three.js ambient background.
 - `src/components/HomePage/Hero.tsx` places the card grid over an animated blue/periwinkle background. The grid markup is directly inside Hero, with all local styles in `Hero.module.css`; the separate BentoGrid component has been removed by user request.
-- The main card currently displays `hero-debit-card-concept-v1.webp`, an optimized transparent
-  WebP derived from the first generated PNG concept. It is decorative and has empty alt text.
+- The main card displays `hero-debit-card-scene-v4-metal-ribbon.webp`, an optimized transparent
+  WebP with the revised black-card composition. It is decorative and has empty alt text.
 - From 48rem upward, the main-card asset is deliberately oversized and clipped by the card's
   right and lower edges. On smaller screens it participates in normal document flow between the
   centered copy and CTA, so the product remains legible instead of disappearing beyond the card.
@@ -45,11 +64,37 @@ Updated: 2026-09-19. This file is the shared context requested by the user. Keep
   cashback, savings, and one compound utility slide containing the two compact actions. The next
   slide is partially visible. The experimental rail-edge fade was removed after the user found
   its appearance and scrolling behavior unreliable.
+- The rail bleeds past both page gutters with `margin-inline: -1.125rem` and a matching
+  `padding-inline`, so slides are clipped by the physical screen edge rather than by the text
+  gutter, and at maximum scroll the last slide's right edge lands exactly on the gutter for any
+  slide width. `scroll-padding-inline` must match, because the snapport is inset by scroll
+  padding and not by padding: without it every snapped slide aligns flush to the screen edge.
+  The earlier asymmetric version (`padding-right: 3.5rem`, no left padding) cut slides on the
+  gutter line and left 56 px of dead space at the end of the rail, because the third snap
+  position was 68 px beyond reach.
+- Slide width is `calc(100% - 3.5rem)`, leaving about 62 px of the next slide visible to the
+  screen edge. The rail carries `tabindex="0"` so keyboard users can scroll it, with a negative
+  `outline-offset` to keep its focus ring inside the full-bleed box.
+- Slides have no fixed height: they hug their copy, and flex stretch keeps all three equal, which
+  a horizontal rail needs. The stale `min-height` values from the pre-rail vertical stack
+  (`.cashbackCard` 14rem, `.savingsCard` 13rem, `.shortCard` 7rem) were removed along with the
+  `min-height: 0` overrides that cancelled them from 48rem upward. Desktop bounds were measured
+  before and after at 768 and 1280 px and are unchanged, confirming those rules were dead.
+- Any remaining slack on a mobile slide comes from copy length, not from a height floor: equal
+  slide heights mean the shorter card matches the taller one. At 390 px both descriptions wrap to
+  two lines and there is no slack; from about 430 px the cashback description fits one line while
+  the savings one still needs two, leaving 24 px on the cashback slide. The user reviewed this and
+  chose to keep it rather than shorten the copy. Matching the two description lengths is the only
+  way to close it; do not reintroduce per-slide heights.
 - Hero contains five populated solid white cards: everyday card, cashback, savings, shared expenses, and phone-number transfers. Desktop arrangement: one large left card, two right cards, and two short cards below the large card; narrow layouts reflow vertically.
 - The grid currently uses a fixed aspect ratio and proportional rows. At the maximum grid width, the bottom cards are approximately 100 px tall. They cannot comfortably carry a normal headline, description, CTA, and large asset together.
 - `src/assets/index.css` uses Onest and a deeper blue accent. Hero background colors are `#224F91`, `#456BC5`, and `#7C9BDF`.
 - The lower home-page section is empty. Navigation, product catalog, and information architecture are not established yet.
-- Hero action labels are present, but buttons are disabled pending actual product destinations/flows. Cards use plain `div` containers rather than `article`; they are offer tiles within a shared section. Do not link them to nonexistent sections.
+- Hero action labels are present. Cards use plain `div` containers rather than `article`; they are offer tiles within a shared section. Do not link them to nonexistent sections.
+- `.card` no longer sets `backdrop-filter: blur(64px)`. The surface is solid white, so the filter
+  only cost GPU work. `Hero.tsx` also referenced a `supportingCopy` class that did not exist in
+  the module and rendered no class at all; the class is now defined. The unused `.shortArrow` rule
+  was removed along with the rejected arrow icons.
 
 ## Research notes
 
@@ -123,17 +168,22 @@ Updated: 2026-09-19. This file is the shared context requested by the user. Keep
 - Final Hero content, product lineup, fictional terms, and asset subjects.
 - Whether the implemented mobile hybrid should remain, or whether a later asset-complete version
   should remove the main white card and use a fully frameless campaign slider.
+- Whether Hero actions should be disabled. This file previously recorded them as disabled pending
+  destinations, but no Hero button carries `disabled` in the code, so the record had drifted. Only
+  the main CTA remains, and it is enabled.
+- Whether the supporting slides should ever gain their own actions once real destinations exist.
+  For now the only action in Hero is the main CTA.
 
 ## Buttons and animation
 
 - Cards no longer change color on hover. The old hover raised the white alpha from 0.85 to
   0.95, which has no meaning on a solid white surface. The hover media query now only keeps
   `cursor: pointer`. A replacement hover treatment is an open decision.
-- Interface icons use `lucide-react`, selected to complement Onest and the restrained visual style. Hero imports `ArrowRight` directly; the custom `ArrowIcon` wrapper has been removed. Current action icons use 20px size, Lucide's default 2-unit stroke, and `currentColor`. Import only individual icons; decorative icons remain `aria-hidden`. [Lucide React documentation](https://lucide.dev/guide/react).
+- Interface icons use `lucide-react`, selected to complement Onest and the restrained visual style. The custom `ArrowIcon` wrapper has been removed. Hero currently imports no icons: the `ArrowRight` this file previously described was removed at the user's request. When icons return, use 20px size, Lucide's default 2-unit stroke, and `currentColor`; import only individual icons and keep decorative icons `aria-hidden`. [Lucide React documentation](https://lucide.dev/guide/react).
 - `src/components/Button/Button.tsx` accepts native button props (including refs, handlers, disabled state, and type), a typed `variant`, and an optional decorative `icon`. Default variant: `primary`; default type: `button`.
 - Hero, card, responsive layout, Button, ambient background, phone frame, and both pages use local CSS Modules. `src/assets/index.css` contains a small global reset replacing Tailwind Preflight, font loading, shared color tokens, and global rules. No Tailwind utilities or dependencies remain.
 - Button variants, states, and the text underline pseudo-element are defined in `src/components/Button/Button.module.css`. `Button.tsx` selects a local class by its typed variant. Color tokens remain in `src/assets/index.css`: `--accent`, `--accent-hover`, `--accent-soft`, and `--accent-soft-hover`.
-- Hero demonstrates primary for the card offer, text for cashback, and secondary for savings. Actions remain disabled until destinations/flows exist; disabled buttons do not animate on hover.
+- Hero currently uses only the primary variant, for the main card offer. The `text` and `secondary` variants were briefly placed on the cashback and savings slides and removed at the user's request; they remain available in `Button` for later use.
 - Text underline and color hovers use CSS transitions (200 ms, ease-out), with keyboard focus support and `prefers-reduced-motion` handling. Hover effects respect the browser's hover capability and disabled state.
 - Keep the existing Three.js background animation in its current engine.
 
