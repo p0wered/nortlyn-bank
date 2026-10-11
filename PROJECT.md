@@ -18,8 +18,19 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   navigation as part of this task.
 - The `/app` route and the `PhoneFrame` component were removed. The app mockup is designed in
   Figma, not in this codebase.
-- Nortlyn does not yet have an approved logo or symbol. Current assets must not bake in a
-  temporary mark, payment-network logo, cardholder data, or other readable product text.
+- Approved logo (2026-10-11): **Contour**, selected by the user from round 2. The symbol is
+  two offset open semicircular bands; use the custom lowercase `nortlyn` wordmark shown
+  with it. Final files and usage guidance live in `design/logo/contour-final/`. The primary
+  version is monochrome; blue exports use the existing project accent. Color exports do not
+  constitute a separate new approval of the overall palette. On the website the logo is used
+  only as the favicon so far: the blue small-size symbol (`public/favicon.svg`, `favicon.ico`)
+  and the 180 px app icon as `apple-touch-icon.png`.
+  Product assets may use this approved identity when requested; do not add temporary marks,
+  payment-network logos, invented cardholder data, or other unapproved readable product text.
+- Logo exploration, round 1 feedback (2026-10-11): **Contour** is the user's favorite;
+  **Cut** also continues, but its geometry feels uneven. **Ribbon** was rejected as too
+  simple and the weakest option. Round 2 retains Contour and Cut and adds a new direction.
+  Contour was subsequently selected after round 2. Explorations remain in `design/logo/`.
 
 ### Visual direction
 
@@ -164,8 +175,8 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   of technological progress.
 - Use northern light / horizon / direction as visual associations inspired by the name. This is
   a creative interpretation, not a claim about the name's origin.
-- Explore a simple wordmark and a custom N built from continuous strokes or a directional cut.
-  Avoid making a generic compass the identity's only distinguishing feature.
+- The earlier wordmark/custom-N exploration concluded with selection of Contour. Do not
+  reopen the rejected Ribbon direction without a request.
 - Voice proposal: clear, concise, respectful Russian using “вы”; practical benefits and
   understandable conditions rather than futuristic slogans.
 - Products under consideration: debit card, cashback, savings account, deposits, transfers,
@@ -232,7 +243,7 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 ## Open decisions
 
 - Primary audience and the specific value proposition that makes Nortlyn memorable.
-- Brand territory, wordmark / symbol, and whether a permanent tagline is useful.
+- Brand territory and whether a permanent tagline is useful. The Contour logo is selected.
 - Final visual approval of Onest and the typography scale.
 - Hover treatment for the opaque Hero cards: whether they gain a border or a shadow.
 - Final Hero content, product lineup, fictional terms, and asset subjects.
