@@ -29,7 +29,8 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - Accent `#356AE6`, deeper and more saturated than the initial pale proposal; final visual
   approval is pending. Hover tone `#417CFF`, lighter than the accent: the user confirmed the
   implemented value over the earlier documented `#2855C2`.
-- Onest is self-hosted in `public/fonts/onest-variable.ttf`, with its OFL license alongside it.
+- Onest is self-hosted as `public/fonts/onest-variable.woff2` (variable weight, converted from
+  the TTF without subsetting), with its OFL license alongside it.
 - Hero card surfaces are solid white. The `backdrop-filter: blur(64px)` glass treatment was
   removed at the user's request: over the smooth gradient background it changed rendered card
   pixels by at most 13/255, so it cost GPU work without a visible result.
@@ -59,6 +60,9 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   scrolling behavior unreliable.
 - Cards are plain `div` offer tiles within a shared section. Do not link them to nonexistent
   sections.
+- Cards will become clickable later, so they keep `cursor: pointer` on hover now.
+- The desktop grid has four equal rows: the main card spans rows 1–3, the short cards sit in
+  row 4, and each right card spans two rows, so the right cards are always equal in height.
 
 ### Assets
 
@@ -95,10 +99,10 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - Hero contains five solid white cards: everyday card, cashback, savings, shared expenses, and
   phone-number transfers. Desktop: one large left card, two right cards, and two short cards
   below the large card.
-- The desktop grid height follows its width, not its content: fixed rows of 226/106/106 px from
-  48rem, then `aspect-ratio: 828 / 400` with 192fr/90fr/82fr rows from 64rem. At 1680 px the
-  short cards are about 110 px tall and the right cards are 258 and 249 px. These proportions
-  cannot comfortably carry a headline, description, CTA, and large asset together.
+- The desktop grid height follows its width, not its content: four 106 px rows from 48rem,
+  then `aspect-ratio: 828 / 400` with four equal `1fr` rows from 64rem. At 1680 px the main
+  card is 390 px tall, the right cards 254 px each, and the short cards 118 px. These
+  proportions cannot comfortably carry a headline, description, CTA, and large asset together.
 - The main card displays `hero-debit-card-scene-v4-metal-ribbon.webp`, decorative with empty
   alt text. From 48rem upward the image box extends past the card's right and lower edges and is
   clipped; at 1280 px only the ribbon tip reaches the right edge, and the clipped lower part is
@@ -109,8 +113,6 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
   scroll-padding pairing. Slide width is `calc(100% - 3.5rem)`, leaving about 62 px of the next
   slide visible. The rail has `tabindex="0"` so keyboard users can scroll it.
 - The main CTA «Оформить карту» is enabled and has no destination.
-- Cards set `cursor: pointer` on hover although they are not interactive; the card hover
-  treatment is an open decision.
 - The lower home-page section is empty. Navigation, product catalog, and information
   architecture are not established.
 
@@ -224,8 +226,7 @@ Code conventions live in `AGENTS.md`; implementation history lives in git.
 - Primary audience and the specific value proposition that makes Nortlyn memorable.
 - Brand territory, wordmark / symbol, and whether a permanent tagline is useful.
 - Final visual approval of Onest and the typography scale.
-- Hover treatment for the opaque Hero cards: whether they gain a border or a shadow, and whether
-  the non-functional `cursor: pointer` stays.
+- Hover treatment for the opaque Hero cards: whether they gain a border or a shadow.
 - Final Hero content, product lineup, fictional terms, and asset subjects.
 - Whether the mobile hybrid should remain, or whether a later asset-complete version should
   remove the main white card and use a fully frameless campaign slider.

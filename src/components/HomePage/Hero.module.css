@@ -35,9 +35,6 @@
 
 .mainCard {
   position: relative;
-  grid-column: 1;
-  grid-row-start: 1;
-  min-height: 0;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
@@ -128,8 +125,6 @@
   }
 
   .utilityGroup > .shortCard {
-    grid-column: auto;
-    grid-row: auto;
     flex-direction: row;
     align-items: center;
     gap: 1rem;
@@ -148,17 +143,8 @@
 
 .cashbackCard,
 .savingsCard {
-  grid-column: span 2;
   flex-direction: column;
   padding: 1.5rem;
-}
-
-.cashbackCard {
-  grid-row-start: 2;
-}
-
-.savingsCard {
-  grid-row-start: 3;
 }
 
 .heading {
@@ -180,19 +166,10 @@
 }
 
 .shortCard {
-  grid-row-start: 4;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1.125rem;
-}
-
-.sharedExpensesCard {
-  grid-column-start: 1;
-}
-
-.transfersCard {
-  grid-column-start: 2;
 }
 
 .shortHeading {
@@ -210,15 +187,13 @@
 
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: 226px 106px 106px;
+    grid-template-rows: repeat(4, 106px);
     gap: 0.875rem;
   }
 
   .mainCard {
-    grid-column: span 2;
-    grid-row: span 2 / span 2;
-    grid-row-start: 1;
-    min-height: 0;
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 3;
     align-items: flex-start;
     padding: 2rem;
   }
@@ -256,7 +231,7 @@
 
   .cashbackCard,
   .savingsCard {
-    grid-column: 3 / span 1;
+    grid-column: 3;
   }
 
   .description {
@@ -264,24 +239,32 @@
   }
 
   .cashbackCard {
-    grid-row-start: 1;
+    grid-row: 1 / span 2;
   }
 
   .savingsCard {
-    grid-row: 2 / span 2;
+    grid-row: 3 / span 2;
   }
 
   .shortCard {
-    grid-row-start: 3;
+    grid-row: 4;
     flex-direction: row;
     align-items: center;
+  }
+
+  .sharedExpensesCard {
+    grid-column: 1;
+  }
+
+  .transfersCard {
+    grid-column: 2;
   }
 }
 
 @media (min-width: 64rem) {
   .grid {
     aspect-ratio: 828 / 400;
-    grid-template-rows: 192fr 90fr 82fr;
+    grid-template-rows: repeat(4, minmax(0, 1fr));
     gap: 1.125rem;
   }
 
