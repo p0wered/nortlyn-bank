@@ -2,9 +2,9 @@ export const IMPULSE_DURATION = 7.6;
 export const REFERENCE_TIME = 0.35;
 
 export const BACKGROUND_COLORS = {
-  shadow: '#023d26',
-  lift: '#1a596e',
-  glow: '#66f21a',
+  shadow: '#5288d3',
+  lift: '#c1b7e4',
+  glow: '#5d71d1',
 } as const;
 
 export type BackgroundColors = {
